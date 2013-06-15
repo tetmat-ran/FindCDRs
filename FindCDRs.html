@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <title>FindCDRs</title>
+
+    <script src="FindCDRs.js"></script>
+    <link rel="stylesheet" type="text/css" href="FindCDRs.css" />
+    <base target="_blank">
+  </head>
+
+  <body onLoad="init()">
+
+    <!-- TOP LINE -->
+    <div id="title"><a id="title_text" href="FindCDRs.html">Find CDR Sequences</a></div>
+    <div id="chrome_logo_box">
+      <a href="http://www.google.com/chrome" target="_blank"><img id="chrome_logo" src="chrome_logo.png" alt="Only tested on Chrome on Mac OS X 10.8"></a>
+    </div>
+
+    <div id="drop_zone">
+      <embed src="copy_files.svg" type="image/svg+xml" style="float: left;" />
+      <p>Drop <font class="blue_highlight">.seq</font> and <font class="blue_highlight">.ab1</font> files here...
+	<br />&nbsp;&nbsp; or <br />
+	<input type="file" id="choose_files" name="files[]" multiple />
+      </p>
+      <div id="drop_zone_message_box"></div>
+    </div>
+
+    <div id="comment_box">
+      <output id="comments"></output>
+    </div>
+
+    <table id="table_seqfiles">
+
+      <thead>
+	<tr class="thead">
+	  <td class="th_left">Name</td>
+	  <td>Fwd/Rev</td>
+	  <td class="th_right">Sequence Tags</td>
+	</tr>
+      </thead>
+
+      <tfoot>
+	<tr><td></td></tr>
+      </tfoot>
+
+      <tr class="rev">
+	<td class="rev">S0010-Seq1-A1-pBL58-A3_MH0135_2013-06-06_A02</td>
+	<td class="rev">&gt;&gt;&gt;<br />&lt;&lt;&lt;</td>
+	<td class="rev">      o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o
+	  <br />  o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o </td>
+      </tr>
+
+      <tr class="fwd">
+	<td class="fwd">S0010-Seq1-A1-pBL58-A3_MH0135_2013-06-06_A02</td>
+	<td class="fwd">&gt;&gt;&gt;<br />&lt;&lt;&lt;</td>
+	<td class="fwd">      o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o
+	  <br />  o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o </td>
+      </tr>
+
+      <tr class="bad">
+	<td class="bad">S0010-Seq1-A1-pBL58-A3_MH0135_2013-06-06_A02</td>
+	<td class="bad">&gt;&gt;&gt;<br />&lt;&lt;&lt;</td>
+	<td class="bad">      o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o
+	  <br />  o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o </td>
+      </tr>
+
+      <tr>
+	<td>S0010-Seq1-A1-pBL58-A3_MH0135_2013-06-06_A02</td>
+	<td>&gt;&gt;&gt;<br />&lt;&lt;&lt;</td>
+	<td>      o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o
+	  <br />  o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o </td>
+      </tr>
+
+    </table>
+
+    <div id="attributions">
+
+      <br />Many lines of code were borrowed from <a href="http://www.html5rocks.com/en/tutorials/file/dndfiles/">Eric Bidelman</a> at <a href="http://www.html5rocks.com/">HTML5 Rocks</a>
+
+      <br /><a href="http://thenounproject.com/noun/copy-text/#icon-No14015" target="_blank">Copy Text</a> designed by <a href="http://thenounproject.com/Cobretti" target="_blank">Chris Alpaerts</a> from The Noun Project
+
+      <br /><a href="http://colorschemedesigner.com/#2K42koHZobITr">The color palette</a> designed using <a href="http://www.colorschemedesigner.com/">Color Scheme Designer</a> by Petr Stanicek
+
+    </div>
+
+
+  </body>
+</html>
