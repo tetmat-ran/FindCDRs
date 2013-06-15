@@ -25,6 +25,7 @@ function SeqFile(f) {
 	(lastModifiedMinutes < 10 ? "0" : "") + lastModifiedMinutes + ":" + 
 	(lastModifiedSeconds < 10 ? "0" : "") + lastModifiedSeconds;
 
+    this.addToTable();
     this.getSeq();
 }
 
@@ -41,6 +42,25 @@ SeqFile.prototype.setSeq = function (evt) {
     alert('read!');
 }
 
+SeqFile.prototype.addToTable = function () {
+    var newRow = document.createElement('tr');
+    newRow.className = "processing";
+
+    newCell = document.createElement('td');
+    newCell.appendChild(document.createTextNode(this.filename));
+    newRow.appendChild(newCell);
+
+    newCell = document.createElement('td');
+    newCell.innerHTML = "&gt;&gt;&gt;<br />&lt;&lt;&lt";
+    newRow.appendChild(newCell);
+
+    newCell = document.createElement('td');
+    newCell.innerHTML = "o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o<br />o [ LC ] o o o [ HC1 ] o [ HC2 ] o [ HC3 ] o o";
+    newRow.appendChild(newCell);
+
+    document.getElementById('table_seqfiles').appendChild(newRow);
+}
+
 function init() {
     // We need these functionalities to read files locally
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
@@ -54,8 +74,6 @@ function init() {
     var dropZone = document.getElementById('drop_zone');
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleDrop, false);
-
-    tableTest();
 }
 
 // Drop zone
@@ -93,26 +111,4 @@ function processFiles(files) {
 	}
 
     }
-}
-
-function tableTest() {
-    tbl = document.getElementById("table_seqfiles");
-    comment_box = document.getElementById("comments");
-
-    comment_box.innerHTML += tbl["rows"] + "<br />";
-    
-    txt = document.createTextNode("HHHHIIII");
-
-    newrow = document.createElement("tr");
-    newcell = document.createElement("td");
-    newcell.appendChild(txt);
-    newrow.appendChild(newcell);
-    tbl.appendChild(newrow);
-
-    newrow2 = document.createElement("tr");
-    newcell = document.createElement("td");
-    newrow2.appendChild(newcell);
-    tbl.appendChild(newrow2);
-
-    newcell.innerHTML = ("HA!");
 }
