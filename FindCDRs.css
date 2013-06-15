@@ -129,6 +129,10 @@ td.bad {
     border-bottom: 2px solid #de293f;
 }
 
+td.processing {
+    border-top: 2px solid #a8ff91;
+    border-bottom: 2px solid #a8ff91;
+}
 
 .primary-1 { background-color: #62fd3a }
 .primary-2 { background-color: #66e645 }
