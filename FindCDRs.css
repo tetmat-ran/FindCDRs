@@ -69,7 +69,6 @@ a {
 
 #comment_box {
     width: 90%;
-    height: 200px;
 
     margin: 5%;
     border: 1px dashed black;
@@ -77,7 +76,7 @@ a {
 
 #table_seqfiles {
     width: 90%;
-    margin: 10px 5% 20px 5%;
+    margin: 20px 5% 20px 5%;
     padding: 5px;
 
     background-color: #dfffd6;
@@ -85,6 +84,7 @@ a {
     border-collapse: separate;
     border-spacing: 0px 2px;
     border-radius: 20px;
+    box-shadow: 5px 5px 5px grey;
 }
 
 thead {
@@ -114,22 +114,26 @@ td {
     padding: 5px 15px 5px 15px;
 }
 
-td.fwd {
+font.fwd { color: #357adb; }
+font.rev { color: #debd29; }
+font.bad { color: #de293f; }
+
+.fwd>td {
     border-top: 2px solid #357adb;
     border-bottom: 2px solid #357adb;
 }
 
-td.rev {
+.rev>td {
     border-top: 2px solid #dedb29;
     border-bottom: 2px solid #dedb29;
 }
 
-td.bad {
+.bad>td {
     border-top: 2px solid #de293f;
     border-bottom: 2px solid #de293f;
 }
 
-td.processing {
+.processing>td {
     border-top: 2px solid #a8ff91;
     border-bottom: 2px solid #a8ff91;
 }

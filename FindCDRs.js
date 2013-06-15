@@ -34,8 +34,6 @@ SeqFile.prototype.getSeq = function () {
 	document.getElementById("comments").innerHTML += e.target.result + "<br />";
     }
 
-
-
     reader.readAsText(this.file);
 }
 
@@ -56,6 +54,8 @@ function init() {
     var dropZone = document.getElementById('drop_zone');
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleDrop, false);
+
+    tableTest();
 }
 
 // Drop zone
@@ -93,4 +93,26 @@ function processFiles(files) {
 	}
 
     }
+}
+
+function tableTest() {
+    tbl = document.getElementById("table_seqfiles");
+    comment_box = document.getElementById("comments");
+
+    comment_box.innerHTML += tbl["rows"] + "<br />";
+    
+    txt = document.createTextNode("HHHHIIII");
+
+    newrow = document.createElement("tr");
+    newcell = document.createElement("td");
+    newcell.appendChild(txt);
+    newrow.appendChild(newcell);
+    tbl.appendChild(newrow);
+
+    newrow2 = document.createElement("tr");
+    newcell = document.createElement("td");
+    newrow2.appendChild(newcell);
+    tbl.appendChild(newrow2);
+
+    newcell.innerHTML = ("HA!");
 }
