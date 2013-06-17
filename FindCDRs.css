@@ -176,6 +176,10 @@ grouptag {
     font-weight: bold;
 }
 
+#table_grouping>tr>td {
+    border-bottom: 1px dotted black;
+}
+
 .primary-1 { background-color: #62fd3a }
 .primary-2 { background-color: #66e645 }
 .primary-3 { background-color: #4fdd29 }
