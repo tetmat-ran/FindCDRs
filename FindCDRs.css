@@ -68,7 +68,9 @@ seqtags {
 #attributions {
     border-top: 1px solid #dfffd6;
 
-    font-size: x-small;
+    font-size: xx-small;
+
+    clear: both;
 }
 
 #comment_box {
@@ -76,10 +78,11 @@ seqtags {
 
     margin: 5%;
     border: 1px dashed black;
+
+    clear: both;
 }
 
-#table_seqfiles {
-    width: 90%;
+table {
     margin: 20px 5% 20px 5%;
     padding: 5px;
 
@@ -91,19 +94,33 @@ seqtags {
     box-shadow: 5px 5px 5px grey;
 }
 
-thead {
+#table_seqfiles {
+    min-width: 500px;
+
+    float: left;
+}
+
+#table_grouping {
+    min-width: 300px;
+}
+
+#table_seqfiles>thead {
     background-color: #4fdd29;
 }
 
-tr.thead {
+#table_grouping>thead {
+    background-color: #357adb;
+}
+
+thead>tr {
     height: 40px;
 }
 
-.th_left {
+thead>tr>td:first-child {
     border-top-left-radius: 20px;
 }
 
-.th_right {
+thead>tr>td:last-child {
     border-top-right-radius: 20px;
 }
 
@@ -116,13 +133,13 @@ tr.bad:hover { background-color: #ff919e; }
 
 td {
     padding: 5px 15px 5px 15px;
-    font-size: small;
+    font-size: x-small;
+    white-space: nowrap;
 }
 
 tfoot>tr>td, thead>tr>td {
     font-size: medium;
 }
-
 
 font.fwd { color: #357adb; }
 font.rev { color: #debd29; }
@@ -146,6 +163,12 @@ font.bad { color: #de293f; }
 .processing>td {
     border-top: 2px solid #a8ff91;
     border-bottom: 2px solid #a8ff91;
+}
+
+/* GROUPING */
+#group_regexp {
+    margin-left: 10px;
+    background-color: #9ac4fe;
 }
 
 .primary-1 { background-color: #62fd3a }

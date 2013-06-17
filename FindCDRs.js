@@ -1,8 +1,22 @@
 /*
-  Many lines of codes are borrowed from:
-  http://www.html5rocks.com/en/tutorials/file/dndfiles/
+
+FindCDRs.js
+-Also require FindCDRs.html, FindCDRs.css
+
+*only tested for Google Chrome v27.0.1453.110
+
+Extracting CDR sequences from LC and HC sequencing results
+
+Tet Matsuguchi <tet@alum.mit.edu>
+
+Last modified: Jun 16, 2013 (v0.2)
+ 
+Many lines on FileReader have been borrowed from:
+http://www.html5rocks.com/en/tutorials/file/dndfiles/
+
 */
 
+var version = 0.2;
 
 // Global variables... yikes?
 var seqFiles = [];
@@ -34,12 +48,16 @@ function SeqFile(f, i) {
     this.getSeq();
 }
 
+// SeqFile constants
+SeqFile.prototype.CDRs_id = ["LC", "HC1", "HC2", "HC3"];
+SeqFile.prototype.sequenceTagIDs = ["LC_5", "LC_3", "HC1_5", "HC1_3", "HC2_5", "HC2_3", "HC3_5", "HC3_3"];
+SeqFile.prototype.sequenceTags = ["TACTGTCAGCAA", "ACGTTCGGACAG", "TCTGGCTTCAAC", "CACTGGGTGCGT", "GAATGGGTTGCA", "TATGCCGATAGC", "TATTGTGCTCGC", "GACTACTGGGGT"];
+
 SeqFile.prototype.getSeq = function () {
     var reader = new FileReader();
     var seqFile = this;
     reader.onload = function (e) { 
 	seqFile.processContent(e.target.result);
-	//document.getElementById("comments").innerHTML += e.target.result + "<br />";
     }
 
     reader.readAsText(this.file);
@@ -79,23 +97,17 @@ SeqFile.prototype.processContent = function (fileContent) {
 	positions = this.findSequenceTags();
 	if (positions == 0) {
 	    this.invalidate();
+	    return;
 	} else {
 	    this.assignReverse();
 	}
     } else {
 	this.assignForward();
     }
+
+    this.findCDRs();
+    this.translateCDRs();
 }
-
-SeqFile.prototype.sequenceTagIDs = ["LC_5", "LC_3", "HC1_5", "HC1_3", "HC2_5", "HC2_3", "HC3_5", "HC3_3"];
-SeqFile.prototype.sequenceTags = ["TACTGTCAGCAA", "ACGTTCGGACAG", "TCTGGCTTCAAC", "CACTGGGTGCGT", "GAATGGGTTGCA", "TATGCCGATAGC", "TATTGTGCTCGC", "GACTACTGGGGT"];
-
-/*
-LC  = ["TACTGTCAGCAA", "ACGTTCGGACAG"]
-HC1 = ["TCTGGCTTCAAC", "CACTGGGTGCGT"]
-HC2 = ["GAATGGGTTGCA", "TATGCCGATAGC"]
-HC3 = ["TATTGTGCTCGC", "GACTACTGGGGT"]
-*/
 
 SeqFile.prototype.findSequenceTags = function () {
     var nPositives = 0;
@@ -116,6 +128,36 @@ SeqFile.prototype.findSequenceTags = function () {
     return positions;
 }
 
+SeqFile.prototype.findCDRs = function () {
+    // CDRs_dna[0] = LC : seqTags[0], seqTags[1]
+    // CDRs_dna[1] = HC1: seqTags[2], seqTags[3]
+    // CDRs_dna[2] = HC2: seqTags[4], seqTags[5]
+    // CDRs_dna[3] = HC3: seqTags[6], seqTags[7]
+
+    this.CDRs_dna = ["", "", "", ""];
+
+    for (iCDR = 0; iCDR < 4; iCDR++) {
+	if (positions[2 * iCDR] != -1 && positions[2 * iCDR + 1] != -1) {
+	    this.CDRs_dna[iCDR] = this.sequence.slice(positions[2 * iCDR] + this.sequenceTags[2 * iCDR].length,
+						      positions[2 * iCDR + 1]);
+	}
+    }
+}
+
+SeqFile.prototype.translateCDRs = function () {
+    for (iCDR = 0; iCDR < 4; iCDR++) {
+	// CDR sequence information is available
+	if (this.CDRs_dna[iCDR] != "") {
+	    // Does it code valid triplet aa's?
+	    if (this.CDRs_dna[iCDR].length % 3 != 0) {
+		document.getElementById(this.i + "_" + this.CDRs_id[iCDR]).style.color = "red";
+	    } else {
+		document.getElementById(this.i + "_" + this.CDRs_id[iCDR]).style.color = "black";
+	    }
+	}
+    }
+}
+
 SeqFile.prototype.addToTable = function () {
     this.tableRow = document.createElement('tr');
     this.tableRow.className = "processing";
@@ -128,7 +170,7 @@ SeqFile.prototype.addToTable = function () {
     this.tableRow.appendChild(this.tableDirection);
 
     this.tableSeqTags = document.createElement('td');
-    this.tableSeqTags.innerHTML = '<seqtags>o <font id="' + this.i + '_LC_5">[</font> LC <font id="' + this.i + '_LC_3">]</font> o o o <font id="' + this.i + '_HC1_5">[</font> HC1 <font id="' + this.i + '_HC1_3">]</font> o <font id="' + this.i + '_HC2_5">[</font> HC2 <font id="' + this.i + '_HC2_3">]</font> o <font id="' + this.i + '_HC3_5">[</font> HC3 <font id="' + this.i + '_HC3_3">]</font> o o</seqtags>';
+    this.tableSeqTags.innerHTML = '<seqtags>o <font id="' + this.i + '_LC_5">[</font> <font id="' + this.i + '_LC">LC</font> <font id="' + this.i + '_LC_3">]</font> o o o <font id="' + this.i + '_HC1_5">[</font> <font id="' + this.i + '_HC1">HC1</font> <font id="' + this.i + '_HC1_3">]</font> o <font id="' + this.i + '_HC2_5">[</font> <font id="' + this.i + '_HC2">HC2</font> <font id="' + this.i + '_HC2_3">]</font> o <font id="' + this.i + '_HC3_5">[</font> <font id="' + this.i + '_HC3">HC3</font> <font id="' + this.i + '_HC3_3">]</font> o o</seqtags>';
     this.tableRow.appendChild(this.tableSeqTags);
 
     document.getElementById('table_seqfiles').appendChild(this.tableRow);
@@ -190,7 +232,6 @@ function handleFileSelect(evt) {
 // Processing Files
 function processFiles(files) {
     for (var i = 0, f; f = files[i]; i++) {
-
 	// At this time only .seq files are used
 	if (f.name.substr(-4, 4) == ".seq") {
 	    seqFiles.push(new SeqFile(f, seqFiles.length));
@@ -199,8 +240,38 @@ function processFiles(files) {
 	} else {
 	    document.getElementById("drop_zone_message_box").innerHTML += "Ignoring " + escape(f.name) + "<br />";
 	}
-
     }
+
+    makeGroups();
+}
+
+function makeGroups() {
+
+    // Remember to escape \ with \\
+    var re_grouping = new RegExp(makeRegExp(document.getElementById("group_regexp").value));
+
+    var groupTable = document.getElementById("table_grouping");
+    for (seqFile in seqFiles) {
+	newRow = document.createElement("tr");
+
+	newCell = document.createElement("td");
+	newCell.innerHTML = seqFiles[seqFile].name;
+	newRow.appendChild(newCell);
+
+	m = re_grouping.exec(seqFiles[seqFile].name);
+	newCell = document.createElement("td");
+	newCell.innerHTML = m[1];
+	newRow.appendChild(newCell);
+
+	groupTable.appendChild(newRow);
+    }
+}
+
+function makeRegExp(str) {
+    str = str.replace(/Row/g, "[A-H]");
+    str = str.replace(/Column/g, "[01]?\\d");
+
+    return str;
 }
 
 function revcomp(seq) {
