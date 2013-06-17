@@ -246,21 +246,43 @@ function processFiles(files) {
 }
 
 function makeGroups() {
+    var groups = [];
 
     // Remember to escape \ with \\
     var re_grouping = new RegExp(makeRegExp(document.getElementById("group_regexp").value));
+
+    for (seqFile in seqFiles) {
+	var m = re_grouping.exec(seqFiles[seqFile].name);
+	if (!m) {
+	    seqFiles[seqFile].group = -1;
+	    continue;
+	}
+
+	var group_identifier = m[m.length - 1];
+	iGroup = groups.indexOf(group_identifier);
+	if (iGroup == -1) {
+	    seqFiles[seqFile].group = groups.length;
+	    groups.push(group_identifier);
+	} else {
+	    seqFiles[seqFile].group = iGroup;
+	}
+    }
 
     var groupTable = document.getElementById("table_grouping");
     for (seqFile in seqFiles) {
 	newRow = document.createElement("tr");
 
 	newCell = document.createElement("td");
-	newCell.innerHTML = seqFiles[seqFile].name;
-	newRow.appendChild(newCell);
 
-	m = re_grouping.exec(seqFiles[seqFile].name);
-	newCell = document.createElement("td");
-	newCell.innerHTML = m[1];
+	if (seqFiles[seqFile].group != -1) {
+	    a = seqFiles[seqFile].name.indexOf(groups[seqFiles[seqFile].group]);
+	    newCell.innerHTML = seqFiles[seqFile].name.slice(0, a) + 
+		"<grouptag>" + groups[seqFiles[seqFile].group] + "</grouptag>"+ 
+		seqFiles[seqFile].name.slice(a + groups[seqFiles[seqFile].group].length, seqFiles[seqFile].name.length);
+	} else {
+	    newCell.innerHTML = seqFiles[seqFile].name;
+	}
+
 	newRow.appendChild(newCell);
 
 	groupTable.appendChild(newRow);

@@ -171,6 +171,11 @@ font.bad { color: #de293f; }
     background-color: #9ac4fe;
 }
 
+grouptag {
+    color: #357adb;
+    font-weight: bold;
+}
+
 .primary-1 { background-color: #62fd3a }
 .primary-2 { background-color: #66e645 }
 .primary-3 { background-color: #4fdd29 }
