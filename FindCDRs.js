@@ -14,12 +14,15 @@ Last modified: Jun 16, 2013 (v0.2)
 Many lines on FileReader have been borrowed from:
 http://www.html5rocks.com/en/tutorials/file/dndfiles/
 
+http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
+
 */
 
 var version = 0.2;
 
 // Global variables... yikes?
 var seqFiles = [];
+var seqGroups = [];
 
 // Objects / Classes
 function SeqFile(f, i) {
@@ -31,6 +34,7 @@ function SeqFile(f, i) {
 
     this.valid = 1; // Innocent unless proven guilty
     this.direction = ""; // "fwd" or "rev"
+    this.group = -1;
 
     lastModifiedMonth = f.lastModifiedDate.getMonth() + 1;
     lastModifiedHours = f.lastModifiedDate.getHours();
@@ -193,6 +197,16 @@ SeqFile.prototype.invalidate = function () {
     this.tableRow.className = "bad";
 }
 
+SeqFile.prototype.getGroupTaggedName = function () {
+    if (this.group == -1 || seqGroups[this.group] == "") {
+	return this.name;
+    }
+
+    return this.name.slice(0, this.groupIdentifierAt) + 
+	"<grouptag>" + seqGroups[this.group] + "</grouptag>"+ 
+	this.name.slice(this.groupIdentifierAt + seqGroups[this.group].length, this.name.length);
+}
+
 function init() {
     // We need these functionalities to read files locally
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
@@ -206,6 +220,7 @@ function init() {
     var dropZone = document.getElementById('drop_zone');
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleDrop, false);
+
 }
 
 // Drop zone
@@ -246,7 +261,9 @@ function processFiles(files) {
 }
 
 function makeGroups() {
-    var groups = [];
+    seqGroups = [];
+
+    var groupTable = document.getElementById("table_grouping");
 
     // Remember to escape \ with \\
     var re_grouping = new RegExp(makeRegExp(document.getElementById("group_regexp").value));
@@ -255,37 +272,57 @@ function makeGroups() {
 	var m = re_grouping.exec(seqFiles[seqFile].name);
 	if (!m) {
 	    seqFiles[seqFile].group = -1;
+
+	    // Add to grouping by itself as non-group
+	    var newGroupSeq = document.createElement("td");
+	    newGroupSeq.innerHTML = seqFiles[seqFile].name;
+
+	    var newGroupSize = document.createElement("td");
+	    newGroupSize.innerHTML = "0";
+
+	    var newGroup = document.createElement("tr");
+	    newGroup.className = "nongroup";
+	    newGroup.appendChild(newGroupSeq);
+	    newGroup.appendChild(newGroupSize);
+
+	    groupTable.appendChild(newGroup);
+	    
 	    continue;
 	}
 
 	var group_identifier = m[m.length - 1];
-	iGroup = groups.indexOf(group_identifier);
+	seqFiles[seqFile].groupIdentifierAt = seqFiles[seqFile].name.slice(m.index, seqFiles[seqFile].name.length).indexOf(group_identifier) + m.index;
+
+	var iGroup = seqGroups.indexOf(group_identifier);
 	if (iGroup == -1) {
-	    seqFiles[seqFile].group = groups.length;
-	    groups.push(group_identifier);
+	    seqFiles[seqFile].group = iGroup = seqGroups.length;
+	    seqGroups.push(group_identifier);
+
+	    // Add to grouping by itself as non-group
+	    var newGroupSeqs = document.createElement("td");
+	    newGroupSeqs.id = iGroup + "_groupSeqs";
+	    newGroupSeqs.innerHTML = seqFiles[seqFile].getGroupTaggedName();
+
+	    var newGroupSize = document.createElement("td");
+	    newGroupSize.id = iGroup + "_groupSize";
+	    newGroupSize.innerHTML = "1";
+
+	    var newGroup = document.createElement("tr");
+	    newGroup.appendChild(newGroupSeqs);
+	    newGroup.appendChild(newGroupSize);
+
+	    groupTable.appendChild(newGroup);
+
 	} else {
 	    seqFiles[seqFile].group = iGroup;
+
+	    var thisGroupSeqs = document.getElementById(iGroup + "_groupSeqs");
+	    thisGroupSeqs.innerHTML += "<br />" + seqFiles[seqFile].getGroupTaggedName();
+
+	    var thisGroupSize = document.getElementById(iGroup + "_groupSize");
+	    thisGroupSize.innerHTML = parseInt(thisGroupSize.innerHTML) + 1;
+	    
 	}
-    }
-
-    var groupTable = document.getElementById("table_grouping");
-    for (seqFile in seqFiles) {
-	newRow = document.createElement("tr");
-
-	newCell = document.createElement("td");
-
-	if (seqFiles[seqFile].group != -1) {
-	    a = seqFiles[seqFile].name.indexOf(groups[seqFiles[seqFile].group]);
-	    newCell.innerHTML = seqFiles[seqFile].name.slice(0, a) + 
-		"<grouptag>" + groups[seqFiles[seqFile].group] + "</grouptag>"+ 
-		seqFiles[seqFile].name.slice(a + groups[seqFiles[seqFile].group].length, seqFiles[seqFile].name.length);
-	} else {
-	    newCell.innerHTML = seqFiles[seqFile].name;
-	}
-
-	newRow.appendChild(newCell);
-
-	groupTable.appendChild(newRow);
     }
 }
 
@@ -304,4 +341,28 @@ function revcomp(seq) {
     seq = seq.replace(/x/g, "T");
     seq = seq.replace(/y/g, "G");
     return seq.split("").reverse().join("");
+}
+
+function saveTextAsFile()
+{
+    var textToWrite = "";
+    
+    for (var group in seqGroups) {
+	
+    }
+    
+    for (var seqFile in seqFiles) {
+	textToWrite += seqFiles[seqFile].name + "\n";
+    }
+
+    var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+    var fileNameToSaveAs = "testWrite.txt";
+    
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+
+    // Chrome allows the link to be clicked programmatically.
+    downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+    downloadLink.click();
 }

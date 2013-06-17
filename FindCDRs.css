@@ -178,6 +178,32 @@ grouptag {
 
 #table_grouping>tr>td {
     border-bottom: 1px dotted black;
+    vertical-align: top;
+}
+
+.nongroup>td {
+    background-color: #ffd6db;
+    background-color: #ff919e;
+}
+
+#save_file {
+    width: 70px;
+    height: 70px;
+
+    background-color: #d9e9fe;
+    
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+
+    border: 2px solid #357adb;
+    border-radius: 20px;
+    box-shadow: 2px 2px 5px black;
+}
+
+#save_file>img {
+    width: 50px;
+    margin: 10px;
 }
 
 .primary-1 { background-color: #62fd3a }

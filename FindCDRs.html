@@ -39,38 +39,40 @@ See attributions at the bottom for CC
       <div id="drop_zone_message_box"></div>
     </div>
 
+    <div id="save_file" onClick="saveTextAsFile()"><img src="save_file.png" /></div>
 
-    <!-- Table for SeqFile List -->
-    <table id="table_seqfiles">
-      <thead>
-	<tr>
-	  <td>Name</td>
-	  <td>Fwd/Rev</td>
-	  <td>Sequence Tags</td>
-	</tr>
-      </thead>
-      <!-- footer for seqfile list -->
-      <tfoot>
-	<tr><td><font class="fwd">Forward</font> - <font class="rev">Reverse</font> - <font class="bad">Bad</font></td></tr>
-      </tfoot>
-    </table>
 
-    <!-- Table for SeqFile Grouping -->
-    <table id="table_grouping">
-      <thead>
-	<tr>
-	  <td>
-	    Grouping
-	    <select id="group_regexp">
-	      <option>_(RowColumn)$</option>
-	      <option>S\d+-Seq\d+-(.*?)_</option>
-	    </select>
-	  </td>
-	  <td>Size</td></tr>
-      </thead>
-      <tfoot><tr><td>Total Groups: </td></tfoot>
-    </table>
-
+      <!-- Table for SeqFile List -->
+      <table id="table_seqfiles">
+	<thead>
+	  <tr>
+	    <td>Name</td>
+	    <td>Fwd/Rev</td>
+	    <td>Sequence Tags</td>
+	  </tr>
+	</thead>
+	<!-- footer for seqfile list -->
+	<tfoot>
+	  <tr><td><font class="fwd">Forward</font> - <font class="rev">Reverse</font> - <font class="bad">Bad</font></td></tr>
+	</tfoot>
+      </table>
+      
+      <!-- Table for SeqFile Grouping -->
+      <table id="table_grouping">
+	<thead>
+	  <tr>
+	    <td>
+	      Grouping
+	      <select id="group_regexp">
+		<option>_(RowColumn)$</option>
+		<option>S\d+-Seq\d+-(.*?)_</option>
+	      </select>
+	    </td>
+	    <td>Size</td></tr>
+	</thead>
+	<tfoot><tr><td>Total Groups: </td></tfoot>
+      </table>
+      
     <div id="comment_box">
       <output id="comments"></output>
     </div>
@@ -80,6 +82,8 @@ See attributions at the bottom for CC
       <br />FileReader code was borrowed from <a href="http://www.html5rocks.com/en/tutorials/file/dndfiles/">Eric Bidelman</a> at <a href="http://www.html5rocks.com/">HTML5 Rocks</a>
 
       <br /><a href="http://thenounproject.com/noun/copy-text/#icon-No14015" target="_blank">Copy Text</a> designed by <a href="http://thenounproject.com/Cobretti" target="_blank">Chris Alpaerts</a> from The Noun Project
+
+      <br /><a href="http://thenounproject.com/noun/save-file/#icon-No10092" target="_blank">Save File</a> designed by <a href="http://thenounproject.com/iconoci" target="_blank">iconoci</a> from The Noun Project
 
       <br /><a href="http://colorschemedesigner.com/#2K42koHZobITr">The color palette</a> designed using <a href="http://www.colorschemedesigner.com/">Color Scheme Designer</a> by Petr Stanicek
 
