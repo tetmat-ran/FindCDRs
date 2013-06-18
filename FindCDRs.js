@@ -23,6 +23,8 @@ var version = 0.2;
 // Global variables... yikes?
 var seqFiles = [];
 var seqGroups = [];
+var seqInGroups = [];
+var seqNotInGroups = [];
 
 // Objects / Classes
 function SeqFile(f, i) {
@@ -262,6 +264,8 @@ function processFiles(files) {
 
 function makeGroups() {
     seqGroups = [];
+    seqInGroups = [];
+    seqNotInGroups = [];
 
     var groupTable = document.getElementById("table_grouping");
 
@@ -272,6 +276,7 @@ function makeGroups() {
 	var m = re_grouping.exec(seqFiles[seqFile].name);
 	if (!m) {
 	    seqFiles[seqFile].group = -1;
+	    seqNotInGroups.push(seqFiles[seqFile].i);
 
 	    // Add to grouping by itself as non-group
 	    var newGroupSeq = document.createElement("td");
@@ -291,12 +296,14 @@ function makeGroups() {
 	}
 
 	var group_identifier = m[m.length - 1];
-	seqFiles[seqFile].groupIdentifierAt = seqFiles[seqFile].name.slice(m.index, seqFiles[seqFile].name.length).indexOf(group_identifier) + m.index;
+	seqFiles[seqFile].groupIdentifierAt = 
+	    seqFiles[seqFile].name.slice(m.index, seqFiles[seqFile].name.length).indexOf(group_identifier) + m.index;
 
 	var iGroup = seqGroups.indexOf(group_identifier);
 	if (iGroup == -1) {
 	    seqFiles[seqFile].group = iGroup = seqGroups.length;
 	    seqGroups.push(group_identifier);
+	    seqInGroups.push([seqFiles[seqFile].i]);
 
 	    // Add to grouping by itself as non-group
 	    var newGroupSeqs = document.createElement("td");
@@ -315,6 +322,7 @@ function makeGroups() {
 
 	} else {
 	    seqFiles[seqFile].group = iGroup;
+	    seqInGroups[iGroup].push(seqFiles[seqFile].i);
 
 	    var thisGroupSeqs = document.getElementById(iGroup + "_groupSeqs");
 	    thisGroupSeqs.innerHTML += "<br />" + seqFiles[seqFile].getGroupTaggedName();
