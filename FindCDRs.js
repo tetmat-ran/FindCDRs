@@ -341,6 +341,15 @@ function makeGroups() {
     }
 }
 
+function changeGrouping() {
+    regexpDOM = document.getElementById("group_regexp");
+    if (regexpDOM.value == "Other...") {
+	newOptionValue = prompt("Enter a new regular expression for grouping sequence names:");
+	regexpDOM.add(new Option(newOptionValue));
+	regexpDOM.selectedIndex = regexpDOM.length - 1;
+    }
+}
+
 function makeRegExp(str) {
     str = str.replace(/Row/g, "[A-H]");
     str = str.replace(/Column/g, "[01]?\\d");

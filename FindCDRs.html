@@ -63,10 +63,11 @@ See attributions at the bottom for CC
 	  <tr>
 	    <td>
 	      Grouping
-	      <select id="group_regexp">
+	      <select id="group_regexp" onChange="changeGrouping();">
 		<option>_(RowColumn)$</option>
 		<option>S\d+-Seq\d+-(.*?)_</option>
 		<option>.*</option>
+		<option>Other...</option>
 	      </select>
 	    </td>
 	    <td>Size</td></tr>
