@@ -18,13 +18,31 @@ http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-t
 
 */
 
-var version = 0.2;
+var version = "0.200";
 
 // Global variables... yikes?
 var seqFiles = [];
 var seqGroups = [];
 var seqInGroups = [];
 var seqNotInGroups = [];
+
+var gencode = {
+    'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M',
+    'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',
+    'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K',
+    'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',
+    'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L',
+    'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',
+    'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q',
+    'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',
+    'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V',
+    'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',
+    'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E',
+    'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',
+    'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S',
+    'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',
+    'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',
+    'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W'};
 
 // Objects / Classes
 function SeqFile(f, i) {
@@ -39,17 +57,7 @@ function SeqFile(f, i) {
     this.group = -1;
     this.CDRs_dna = ["", "", "", ""];
 
-    lastModifiedMonth = f.lastModifiedDate.getMonth() + 1;
-    lastModifiedHours = f.lastModifiedDate.getHours();
-    lastModifiedMinutes = f.lastModifiedDate.getMinutes();
-    lastModifiedSeconds = f.lastModifiedDate.getSeconds();
-
-    this.lastModifiedDate = f.lastModifiedDate.getFullYear() + "-" + 
-	(lastModifiedMonth < 10 ? "0" : "") + lastModifiedMonth + "-" + 
-	f.lastModifiedDate.getDate() + " " +
-	(lastModifiedHours < 10 ? "0" : "") + lastModifiedHours + ":" + 
-	(lastModifiedMinutes < 10 ? "0" : "") + lastModifiedMinutes + ":" + 
-	(lastModifiedSeconds < 10 ? "0" : "") + lastModifiedSeconds;
+    this.lastModifiedDate = getTimestamp(f.lastModifiedDate);
 
     this.addToTable();
     this.getSeq();
@@ -224,6 +232,7 @@ function init() {
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleDrop, false);
 
+    alert(translate("ACTGTTCGTGGATCCAAAAAACCGTACTTTCTCTGGTTGGGCTATGG"));
 }
 
 // Drop zone
@@ -330,7 +339,6 @@ function makeGroups() {
 
 	    var thisGroupSize = document.getElementById(iGroup + "_groupSize");
 	    thisGroupSize.innerHTML = parseInt(thisGroupSize.innerHTML) + 1;
-	    
 	}
     }
 }
@@ -352,20 +360,43 @@ function revcomp(seq) {
     return seq.split("").reverse().join("");
 }
 
+function translate(seq) {
+    var aa = [];
+    for (var i = 0, l = Math.floor(seq.length / 3); i < l ; i++) {
+	aa.push(gencode[seq.slice(i * 3, i * 3 + 3)]);
+    }
+    return aa.join("") + new Array(seq.length % 3 + 1).join("^");
+}
+
+function getTimestamp(dateObject) {
+    var month = dateObject.getMonth() + 1;
+    var date = dateObject.getDate();
+    var hours = dateObject.getHours();
+    var minutes = dateObject.getMinutes();
+    var seconds = dateObject.getSeconds();
+
+    return dateObject.getFullYear() + "-" + 
+	(month < 10 ? "0" : "") + month + "-" + 
+	(date < 10 ? "0" : "") + date + "_" + 
+	(hours < 10 ? "0" : "") + hours +
+	(minutes < 10 ? "0" : "") + minutes +
+	(seconds < 10 ? "0" : "") + seconds;
+}
+
 function saveTextAsFile()
 {
     var textToWrite = "";
-    var textLines = [];
+    var textLines = [["Group ID", "LC", "HC1", "HC2", "HC3", "Sequence Names"].join("\t")];
     
+    // Output ones in groups first
     for (var iGroup in seqGroups) {
 
-	seqs = [];
+	var seqs = [];
 	var CDRs_dna = [[], [], [], []];
 
 	for (seq_i in seqInGroups[iGroup]) {
 	    var iSeq = seqInGroups[iGroup][seq_i];
 
-	    document.getElementById("comments").innerHTML += iSeq;
 	    seqs.push(seqFiles[iSeq].name);
 
 	    for (iCDR in CDRs_dna) {
@@ -375,7 +406,7 @@ function saveTextAsFile()
 	    }
 	}
 
-	lineElements = [seqGroups[iGroup],
+	var lineElements = [seqGroups[iGroup],
 			    CDRs_dna[0].join(","),
 			    CDRs_dna[1].join(","),
 			    CDRs_dna[2].join(","),
@@ -385,10 +416,24 @@ function saveTextAsFile()
 	textLines.push(lineElements.join("\t"));
     }
 
+    // Those not in groups
+    for (var iGroup in seqNotInGroups) {
+
+	var seq = seqFiles[seqNotInGroups[iGroup]];
+	var lineElements = ["",
+			    seq.CDRs_dna[0],
+			    seq.CDRs_dna[1],
+			    seq.CDRs_dna[2],
+			    seq.CDRs_dna[3],
+			    seq.name];
+
+	textLines.push(lineElements.join("\t"));
+    }
+
     textToWrite = textLines.join("\n");
     
     var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
-    var fileNameToSaveAs = "testWrite.txt";
+    var fileNameToSaveAs = getTimestamp(new Date()) + "_FindCDRs_v" + version + ".txt";
     
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
@@ -398,3 +443,4 @@ function saveTextAsFile()
     downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
     downloadLink.click();
 }
+
