@@ -231,8 +231,6 @@ function init() {
     var dropZone = document.getElementById('drop_zone');
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleDrop, false);
-
-    alert(translate("ACTGTTCGTGGATCCAAAAAACCGTACTTTCTCTGGTTGGGCTATGG"));
 }
 
 // Drop zone
@@ -386,13 +384,14 @@ function getTimestamp(dateObject) {
 function saveTextAsFile()
 {
     var textToWrite = "";
-    var textLines = [["Group ID", "LC", "HC1", "HC2", "HC3", "Sequence Names"].join("\t")];
+    var textLines = [["Group ID", "LC", "HC1", "HC2", "HC3", "LC", "HC1", "HC2", "HC3", "Sequence Names"].join("\t")];
     
     // Output ones in groups first
     for (var iGroup in seqGroups) {
 
 	var seqs = [];
 	var CDRs_dna = [[], [], [], []];
+	var CDRs_aa = [[], [], [], []];
 
 	for (seq_i in seqInGroups[iGroup]) {
 	    var iSeq = seqInGroups[iGroup][seq_i];
@@ -402,11 +401,16 @@ function saveTextAsFile()
 	    for (iCDR in CDRs_dna) {
 		if (seqFiles[iSeq].CDRs_dna[iCDR] != "") {
 		    CDRs_dna[iCDR].push(seqFiles[iSeq].CDRs_dna[iCDR]);
+		    CDRs_aa[iCDR].push(translate(seqFiles[iSeq].CDRs_dna[iCDR]));
 		}
 	    }
 	}
 
 	var lineElements = [seqGroups[iGroup],
+			    CDRs_aa[0].join(","),
+			    CDRs_aa[1].join(","),
+			    CDRs_aa[2].join(","),
+			    CDRs_aa[3].join(","),
 			    CDRs_dna[0].join(","),
 			    CDRs_dna[1].join(","),
 			    CDRs_dna[2].join(","),
@@ -420,7 +424,11 @@ function saveTextAsFile()
     for (var iGroup in seqNotInGroups) {
 
 	var seq = seqFiles[seqNotInGroups[iGroup]];
-	var lineElements = ["",
+	var lineElements = [seq.name,
+			    translate(seq.CDRs_dna[0]),
+			    translate(seq.CDRs_dna[1]),
+			    translate(seq.CDRs_dna[2]),
+			    translate(seq.CDRs_dna[3]),
 			    seq.CDRs_dna[0],
 			    seq.CDRs_dna[1],
 			    seq.CDRs_dna[2],
