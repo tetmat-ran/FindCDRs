@@ -37,6 +37,7 @@ function SeqFile(f, i) {
     this.valid = 1; // Innocent unless proven guilty
     this.direction = ""; // "fwd" or "rev"
     this.group = -1;
+    this.CDRs_dna = ["", "", "", ""];
 
     lastModifiedMonth = f.lastModifiedDate.getMonth() + 1;
     lastModifiedHours = f.lastModifiedDate.getHours();
@@ -354,15 +355,38 @@ function revcomp(seq) {
 function saveTextAsFile()
 {
     var textToWrite = "";
+    var textLines = [];
     
-    for (var group in seqGroups) {
-	
-    }
-    
-    for (var seqFile in seqFiles) {
-	textToWrite += seqFiles[seqFile].name + "\n";
+    for (var iGroup in seqGroups) {
+
+	seqs = [];
+	var CDRs_dna = [[], [], [], []];
+
+	for (seq_i in seqInGroups[iGroup]) {
+	    var iSeq = seqInGroups[iGroup][seq_i];
+
+	    document.getElementById("comments").innerHTML += iSeq;
+	    seqs.push(seqFiles[iSeq].name);
+
+	    for (iCDR in CDRs_dna) {
+		if (seqFiles[iSeq].CDRs_dna[iCDR] != "") {
+		    CDRs_dna[iCDR].push(seqFiles[iSeq].CDRs_dna[iCDR]);
+		}
+	    }
+	}
+
+	lineElements = [seqGroups[iGroup],
+			    CDRs_dna[0].join(","),
+			    CDRs_dna[1].join(","),
+			    CDRs_dna[2].join(","),
+			    CDRs_dna[3].join(","),
+			    seqs.join("\t")];
+
+	textLines.push(lineElements.join("\t"));
     }
 
+    textToWrite = textLines.join("\n");
+    
     var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
     var fileNameToSaveAs = "testWrite.txt";
     
