@@ -271,9 +271,8 @@ function processFiles(files) {
 }
 
 function makeGroups() {
-    seqGroups = [];
-    seqInGroups = [];
-    seqNotInGroups = [];
+
+    resetGroups();
 
     var groupTable = document.getElementById("table_grouping");
 
@@ -341,6 +340,18 @@ function makeGroups() {
     }
 }
 
+function resetGroups() {
+    seqGroups = [];
+    seqInGroups = [];
+    seqNotInGroups = [];
+
+    var groupTable = document.getElementById("table_grouping");
+
+    while (groupTable.rows.length > 2) {
+	groupTable.deleteRow(1);
+    }
+}
+
 function changeGrouping() {
     regexpDOM = document.getElementById("group_regexp");
     if (regexpDOM.value == "Other...") {
@@ -348,6 +359,8 @@ function changeGrouping() {
 	regexpDOM.add(new Option(newOptionValue));
 	regexpDOM.selectedIndex = regexpDOM.length - 1;
     }
+
+    makeGroups();
 }
 
 function makeRegExp(str) {
@@ -461,3 +474,11 @@ function saveTextAsFile()
     downloadLink.click();
 }
 
+function describe(obj) {
+    document.getElementById("comment_box").style.display = "block";
+
+    var commentBox = document.getElementById("comments");
+    for (elm in obj) {
+	commentBox.innerHTML += elm + ": " + obj[elm] + "<br />\n";
+    }
+}
