@@ -39,11 +39,20 @@ See attributions at the bottom for CC
       <div id="drop_zone_message_box"></div>
     </div>
 
-    <div id="save_file" onClick="saveTextAsFile()"><img src="save_file.png" /></div>
-
+    <table id="controls">
+      <tr id="control_text">
+	<td>Load</td>
+	<td>Save</td>
+      </tr>
+      
+      <tr id="control_buttons">
+	<td><img id="load_files" class="button" onClick="document.getElementById('choose_files').click()" src="copy_files.png" /></td>
+	<td><img id="save_file" class="button" onClick="saveTextAsFile()" src="save_file.png" /></td>
+      </tr>
+    </table>
 
       <!-- Table for SeqFile List -->
-      <table id="table_seqfiles">
+      <table id="table_seqfiles" class="seq_list">
 	<thead>
 	  <tr>
 	    <td>Name</td>
@@ -58,7 +67,7 @@ See attributions at the bottom for CC
       </table>
       
       <!-- Table for SeqFile Grouping -->
-      <table id="table_grouping">
+      <table id="table_grouping" class="seq_list">
 	<thead>
 	  <tr>
 	    <td>

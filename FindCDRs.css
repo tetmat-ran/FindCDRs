@@ -55,6 +55,7 @@ seqtags {
     padding-left: 10%;
 
     clear: both;
+    display: none;
 }
 
 #drop_zone_message_box {
@@ -132,13 +133,13 @@ tr.rev:hover { background-color: #fffb3a; }
 tr.bad { background-color: #ffd6db; }
 tr.bad:hover { background-color: #ff919e; }
 
-td {
+.seq_list>thead>tr>td, .seq_list>tfoot>tr>td, .seq_list>tr>td {
     padding: 5px 15px 5px 15px;
     font-size: x-small;
     white-space: nowrap;
 }
 
-tfoot>tr>td, thead>tr>td {
+.seq_list>tfoot>tr>td, .seq_list>thead>tr>td {
     font-size: medium;
 }
 
@@ -187,25 +188,48 @@ grouptag {
     background-color: #ff919e;
 }
 
-#save_file {
-    width: 70px;
-    height: 70px;
+#controls {
+    background-color: inherit;
+    box-shadow: inherit;
+
+    margin-top: 10px;
+    margin-left: 50px;
+
+    clear: both;
+}
+
+#control_text>td {
+    width: 75px;
+    text-align: center;
+    font-size: small;
+}
+
+#control_buttons>td {
+    margin: 0px;
+    padding: 0px;
+}
+
+img.button {
+    width: 40px;
+    margin: 0px 10px 10px 10px;
+    padding: 5px;
 
     background-color: #d9e9fe;
     
-    margin-top: 10px;
-    margin-left: auto;
-    margin-right: auto;
-
     border: 2px solid #357adb;
-    border-radius: 20px;
-    box-shadow: 2px 2px 5px black;
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px black;
 }
 
-#save_file>img {
-    width: 50px;
-    margin: 10px;
+img.button:hover {
+    background-color: #fffd91;
 }
+
+img.button:active {
+    box-shadow: 2px 2px 3px black;
+    width: 38px;
+}
+
 
 .primary-1 { background-color: #62fd3a }
 .primary-2 { background-color: #66e645 }
