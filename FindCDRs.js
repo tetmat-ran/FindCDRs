@@ -234,7 +234,7 @@ function init() {
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleDrop, false);
 
-    document.getElementById("comments").innerHTML += "Start time: " + getTimestamp(startTime) + "<br />\n";
+    document.getElementById("comments").innerHTML += "Start time: " + getTimestamp(startDate) + "<br />\n";
 }
 
 // Drop zone
