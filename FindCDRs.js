@@ -66,11 +66,10 @@ function SeqFile(f, i) {
 }
 
 // SeqFile constants
-SeqFile.prototype.sequenceTags = ["TACTGTCAGCAA", "ACGTTCGGACAG", "TCTGGCTTCAAC", "CACTGGGTGCGT", "GAATGGGTTGCA", "TATGCCGATAGC", "TATTGTGCTCGC", "GACTACTGGGGT"];
-SeqFile.prototype.sequenceTagIDs = ["LC_5", "LC_3", "HC1_5", "HC1_3", "HC2_5", "HC2_3", "HC3_5", "HC3_3"];
-SeqFile.prototype.sequenceTagSymbols = ["[", "]", "[", "]", "[", "]", "[", "]"];
+SeqFile.prototype.sequenceTags = ["TACTGTCAGCAA", "N", "ACGTTCGGACAG", "TCTGGCTTCAAC", "N", "CACTGGGTGCGT", "GAATGGGTTGCA", "N", "TATGCCGATAGC", "TATTGTGCTCGC", "N", "GACTACTGGGGT"];
+SeqFile.prototype.sequenceTagIDs = ["LC_5", "LC", "LC_3", "HC1_5", "HC1", "HC1_3", "HC2_5", "HC2", "HC2_3", "HC3_5", "HC3", "HC3_3"];
+SeqFile.prototype.sequenceTagSymbols = ["[", "LC", "]", "[", "HC1", "]", "[", "HC2", "]", "[", "HC3", "]"];
 SeqFile.prototype.CDRs_id = ["LC", "HC1", "HC2", "HC3"];
-SeqFile.prototype.CDRs_pos = [1, 4, 7, 10];
 
 SeqFile.prototype.getSeq = function () {
     var reader = new FileReader();
@@ -108,13 +107,13 @@ SeqFile.prototype.processContent = function (fileContent) {
 	return;
     }
 
-    // Check forward fro sequence tags
-    positions = this.findSequenceTags();
-    if (positions == 0) {
+    // Check forward from sequence tags
+    this.seqTagPositions = this.findSequenceTags();
+    if (this.seqTagPositions == 0) {
 	this.sequence.original = this.sequence;
 	this.sequence = revcomp(this.sequence);
-	positions = this.findSequenceTags();
-	if (positions == 0) {
+	this.seqTagPositions = this.findSequenceTags();
+	if (this.seqTagPositions == 0) {
 	    this.invalidate();
 	    return;
 	} else {
@@ -131,11 +130,15 @@ SeqFile.prototype.processContent = function (fileContent) {
 SeqFile.prototype.findSequenceTags = function () {
     var nPositives = 0;
     positions = [];
-    for (tag in this.sequenceTags) {
-	var pos = this.sequence.indexOf(this.sequenceTags[tag])
-	if (pos != -1) {
-	    nPositives++;
-	    document.getElementById(this.i + "_" + this.sequenceTagIDs[tag]).style.color = "black";
+    for (var tag in this.sequenceTags) {
+	var pos = -1;
+	// Don't search for the "CDR's", they are not sequence tags
+	if (this.CDRs_id.indexOf(this.sequenceTagIDs[tag]) == -1) {
+	    pos = this.sequence.indexOf(this.sequenceTags[tag])
+	    if (pos != -1) {
+		nPositives++;
+		document.getElementById(this.i + "_" + this.sequenceTagIDs[tag]).style.color = "black";
+	    }
 	}
 	positions.push(pos);
     }
@@ -148,18 +151,22 @@ SeqFile.prototype.findSequenceTags = function () {
 }
 
 SeqFile.prototype.findCDRs = function () {
-    // CDRs_dna[0] = LC : seqTags[0], seqTags[1]
-    // CDRs_dna[1] = HC1: seqTags[2], seqTags[3]
-    // CDRs_dna[2] = HC2: seqTags[4], seqTags[5]
-    // CDRs_dna[3] = HC3: seqTags[6], seqTags[7]
+    this.CDRs_dna = [];
+    
+    for (iCDR in this.CDRs_id) {
+	var seq_dna = "";
 
-    this.CDRs_dna = ["", "", "", ""];
+	// Check to see whether boundary tags are found
+	iSeqTag = this.sequenceTagIDs.indexOf(this.CDRs_id[iCDR]);
+	if (this.seqTagPositions[iSeqTag - 1] != -1 &&
+	    this.seqTagPositions[iSeqTag + 1]) {
 
-    for (iCDR = 0; iCDR < 4; iCDR++) {
-	if (positions[2 * iCDR] != -1 && positions[2 * iCDR + 1] != -1) {
-	    this.CDRs_dna[iCDR] = this.sequence.slice(positions[2 * iCDR] + this.sequenceTags[2 * iCDR].length,
-						      positions[2 * iCDR + 1]);
+	    // If so, bounded region contains the CDR
+	    seq_dna = this.sequence.slice(this.seqTagPositions[iSeqTag - 1] + this.sequenceTags[iSeqTag - 1].length,
+						      this.seqTagPositions[iSeqTag + 1]);
 	}
+
+	this.CDRs_dna.push(seq_dna);
     }
 }
 
@@ -199,18 +206,7 @@ SeqFile.prototype.addToTable = function () {
 	tagElement.innerHTML = this.sequenceTagSymbols[sequenceTag] + " ";
 
 	this.sequenceTagElements.push(tagElement);
-    }
-
-    for (iCDR in this.CDRs_id) {
-	var CDRElement = document.createElement("font");
-	CDRElement.id = this.i + "_" + this.CDRs_id[iCDR];
-	CDRElement.innerHTML = this.CDRs_id[iCDR] + " ";
-
-	this.sequenceTagElements.splice(this.CDRs_pos[iCDR], 0, CDRElement);
-    }
-    
-    for (var iSeqTag in this.sequenceTagElements) {
-	this.sequenceTagElement.appendChild(this.sequenceTagElements[iSeqTag]);
+	this.sequenceTagElement.appendChild(tagElement);
     }
 
     document.getElementById("comments").appendChild(this.sequenceTagElement);
