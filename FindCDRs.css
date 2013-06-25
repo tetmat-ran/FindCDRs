@@ -106,7 +106,7 @@ table {
 }
 
 #table_seqfiles>thead {
-    background-color: #4fdd29;
+    background-color: #357adb;
 }
 
 #table_grouping>thead {
@@ -124,42 +124,46 @@ thead>tr>td:first-child {
 thead>tr>td:last-child {
     border-top-right-radius: 20px;
 }
-
+/*
 tr.fwd { background-color: #d9e9fe; }
 tr.fwd:hover { background-color: #9ac4fe; }
 tr.rev { background-color:  #fffed6; }
 tr.rev:hover { background-color: #fffb3a; }
 tr.bad { background-color: #ffd6db; }
 tr.bad:hover { background-color: #ff919e; }
+*/
 
-.seq_list>thead>tr>td, .seq_list>tfoot>tr>td, .seq_list>tr>td {
-    padding: 5px 15px 5px 15px;
-    font-size: x-small;
+.seq_list>tr>td {
+    padding: 1px 5px 0px 5px;
+    font-size: small;
     white-space: nowrap;
 }
 
 .seq_list>tfoot>tr>td, .seq_list>thead>tr>td {
+    padding: 5px 15px 5px 15px;
     font-size: medium;
 }
 
+/*
 font.fwd { color: #357adb; }
 font.rev { color: #debd29; }
 font.bad { color: #de293f; }
 
 .fwd>td {
     border-top: 2px solid #357adb;
-#    border-bottom: 2px solid #357adb;
+    border-bottom: 2px solid #357adb;
 }
 
 .rev>td {
     border-top: 2px solid #dedb29;
-#    border-bottom: 2px solid #dedb29;
+    border-bottom: 2px solid #dedb29;
 }
 
 .bad>td {
     border-top: 2px solid #de293f;
-#    border-bottom: 2px solid #de293f;
+    border-bottom: 2px solid #de293f;
 }
+*/
 
 .processing>td {
     border-top: 2px solid #a8ff91;

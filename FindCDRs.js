@@ -62,12 +62,12 @@ function SeqFile(f, i) {
 
     this.lastModifiedDate = getTimestamp(f.lastModifiedDate);
 
-    this.addToTable();
+    this.addToTable(); // Should be renamed to createRowElement
     this.getSeq();
 }
 
 // SeqFile constants
-SeqFile.prototype.sequenceTags = ["TACTGTCAGCAA", "N", "ACGTTCGGACAG", "TCTGGCTTCAAC", "N", "CACTGGGTGCGT", "GAATGGGTTGCA", "N", "TATGCCGATAGC", "TATTGTGCTCGC", "N", "GACTACTGGGGT"];
+SeqFile.prototype.sequenceTags = ["TACTGTCAGCAA", "", "ACGTTCGGACAG", "TCTGGCTTCAAC", "", "CACTGGGTGCGT", "GAATGGGTTGCA", "", "TATGCCGATAGC", "TATTGTGCTCGC", "", "GACTACTGGGGT"];
 SeqFile.prototype.sequenceTagIDs = ["LC_5", "LC", "LC_3", "HC1_5", "HC1", "HC1_3", "HC2_5", "HC2", "HC2_3", "HC3_5", "HC3", "HC3_3"];
 SeqFile.prototype.sequenceTagSymbols = ["[", "LC", "]", "[", "HC1", "]", "[", "HC2", "]", "[", "HC3", "]"];
 SeqFile.prototype.CDRs_id = ["LC", "HC1", "HC2", "HC3"];
@@ -134,7 +134,7 @@ SeqFile.prototype.findSequenceTags = function () {
     for (var tag in this.sequenceTags) {
 	var pos = -1;
 	// Don't search for the "CDR's", they are not sequence tags
-	if (this.CDRs_id.indexOf(this.sequenceTagIDs[tag]) == -1) {
+	if (this.sequenceTags[tag] != "") {
 	    pos = this.sequence.indexOf(this.sequenceTags[tag])
 	    if (pos != -1) {
 		nPositives++;
@@ -214,7 +214,7 @@ SeqFile.prototype.addToTable = function () {
 
     this.tableSeqTags.appendChild(this.sequenceTagElement);
     this.tableRow.appendChild(this.tableSeqTags);
-    document.getElementById('table_seqfiles').appendChild(this.tableRow);
+    // document.getElementById('table_seqfiles').appendChild(this.tableRow);
 }
 
 SeqFile.prototype.assignForward = function () {
@@ -296,6 +296,7 @@ function processFiles(files) {
     }
 
     makeGroups();
+    createTableByGroups();
     reportTime();
 }
 
@@ -304,12 +305,17 @@ function makeGroups() {
     resetGroups();
 
     var groupTable = document.getElementById("table_grouping");
+    var singleTable = document.getElementById("table_seqfiles");
 
+    // Pull the RegExp from the dropdown menu to use for grouping sequences
     // Remember to escape \ with \\
     var re_grouping = new RegExp(makeRegExp(document.getElementById("group_regexp").value));
 
     for (seqFile in seqFiles) {
 	var m = re_grouping.exec(seqFiles[seqFile].name);
+
+	// If the sequence name does not have a match for the regexp,
+	// this is a lone sequence with no group identifier
 	if (!m) {
 	    seqFiles[seqFile].group = -1;
 	    seqNotInGroups.push(seqFiles[seqFile].i);
@@ -327,45 +333,56 @@ function makeGroups() {
 	    newGroup.appendChild(newGroupSize);
 
 	    groupTable.appendChild(newGroup);
+	    // singleTable.appendChild(seqFiles[seqFile].tableRow);
 	    
-	    continue;
-	}
-
-	var group_identifier = m[m.length - 1];
-	seqFiles[seqFile].groupIdentifierAt = 
-	    seqFiles[seqFile].name.slice(m.index, seqFiles[seqFile].name.length).indexOf(group_identifier) + m.index;
-
-	var iGroup = seqGroups.indexOf(group_identifier);
-	if (iGroup == -1) {
-	    seqFiles[seqFile].group = iGroup = seqGroups.length;
-	    seqGroups.push(group_identifier);
-	    seqInGroups.push([seqFiles[seqFile].i]);
-
-	    // Add to grouping by itself as non-group
-	    var newGroupSeqs = document.createElement("td");
-	    newGroupSeqs.id = iGroup + "_groupSeqs";
-	    newGroupSeqs.innerHTML = seqFiles[seqFile].getGroupTaggedName();
-
-	    var newGroupSize = document.createElement("td");
-	    newGroupSize.id = iGroup + "_groupSize";
-	    newGroupSize.innerHTML = "1";
-
-	    var newGroup = document.createElement("tr");
-	    newGroup.appendChild(newGroupSeqs);
-	    newGroup.appendChild(newGroupSize);
-
-	    groupTable.appendChild(newGroup);
 
 	} else {
-	    seqFiles[seqFile].group = iGroup;
-	    seqInGroups[iGroup].push(seqFiles[seqFile].i);
 
-	    var thisGroupSeqs = document.getElementById(iGroup + "_groupSeqs");
-	    thisGroupSeqs.innerHTML += "<br />" + seqFiles[seqFile].getGroupTaggedName();
+	    // The group identifier is either the full match to the regexp, or
+	    // If there is one or more parenthical match, it is the last match
+	    var group_identifier = m[m.length - 1];
+	    // Note where in the name the identifier is (because sometimes the same identifier can occur more than once)
+	    seqFiles[seqFile].groupIdentifierAt = 
+		seqFiles[seqFile].name.slice(m.index, seqFiles[seqFile].name.length).indexOf(group_identifier) + m.index;
 
-	    var thisGroupSize = document.getElementById(iGroup + "_groupSize");
-	    thisGroupSize.innerHTML = parseInt(thisGroupSize.innerHTML) + 1;
-	}
+	    var iGroup = seqGroups.indexOf(group_identifier); // is the identifier already in a group?
+
+	    // If this is the first element of the group, then create a new group
+	    if (iGroup == -1) {
+		seqFiles[seqFile].group = iGroup = seqGroups.length; // new group
+		seqGroups.push(group_identifier);
+		seqInGroups.push([seqFiles[seqFile].i]);
+
+		// Add to grouping by itself as non-group
+		var newGroupSeqs = document.createElement("td");
+		newGroupSeqs.id = iGroup + "_groupSeqs";
+		newGroupSeqs.innerHTML = seqFiles[seqFile].getGroupTaggedName();
+
+		var newGroupSize = document.createElement("td");
+		newGroupSize.id = iGroup + "_groupSize";
+		newGroupSize.innerHTML = "1";
+
+		var newGroup = document.createElement("tr");
+		newGroup.appendChild(newGroupSeqs);
+		newGroup.appendChild(newGroupSize);
+
+		groupTable.appendChild(newGroup);
+		// singleTable.appendChild(seqFiles[seqFile].tableRow);
+
+	    } else {
+		seqFiles[seqFile].group = iGroup;
+		seqInGroups[iGroup].push(seqFiles[seqFile].i);
+
+		var thisGroupSeqs = document.getElementById(iGroup + "_groupSeqs");
+		thisGroupSeqs.innerHTML += "<br />" + seqFiles[seqFile].getGroupTaggedName();
+
+		var thisGroupSize = document.getElementById(iGroup + "_groupSize");
+		thisGroupSize.innerHTML = parseInt(thisGroupSize.innerHTML) + 1;
+	    }
+	} // end if (!m)
+
+	// Single table
+	seqFiles[seqFile].tableName.innerHTML = seqFiles[seqFile].getGroupTaggedName(); // Highlight the seqname with the group identifier
     }
 }
 
@@ -375,9 +392,14 @@ function resetGroups() {
     seqNotInGroups = [];
 
     var groupTable = document.getElementById("table_grouping");
+    var singleTable = document.getElementById("table_seqfiles");
 
     while (groupTable.rows.length > 2) {
 	groupTable.deleteRow(1);
+    }
+
+    while (singleTable.rows.length > 2) {
+	singleTable.deleteRow(1);
     }
 }
 
@@ -390,6 +412,26 @@ function changeGrouping() {
     }
 
     makeGroups();
+    createTableByGroups();
+}
+
+function createTableByGroups() {
+    var singleTable = document.getElementById("table_seqfiles");
+    for (iGroup in seqInGroups) {
+	for (iSeq in seqInGroups[iGroup]) {
+	    singleTable.appendChild(seqFiles[seqInGroups[iGroup][iSeq]].tableRow);
+	}
+	var groupBorder = document.createElement('tr');
+	var groupBorderTD = document.createElement('td');
+	groupBorderTD.style.border = "1px solid black";
+
+	groupBorder.appendChild(groupBorderTD);
+	singleTable.appendChild(groupBorder);
+    }
+
+    for (iSeq in seqNotInGroups) {
+	singleTable.appendChild(seqFiles[seqNotInGroups[iSeq]].tableRow);
+    }
 }
 
 function makeRegExp(str) {
@@ -532,5 +574,4 @@ function reportTime() {
     var elapsed = (now.getTime() - startDate.getTime()) / 1000;
     var timeMessage = elapsed + " seconds have elapsed.";
     document.getElementById('comments').innerHTML += timeMessage + "<br />\n";
-    alert(timeMessage);
 }

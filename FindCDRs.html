@@ -59,14 +59,21 @@ See attributions at the bottom for CC
       <table id="table_seqfiles" class="seq_list">
 	<thead>
 	  <tr>
-	    <td>Name</td>
+	    <td>Name
+	      <select id="group_regexp" onChange="changeGrouping();">
+		<option>_(RowColumn)$</option>
+		<option>S\d+-Seq\d+-(.*?)_</option>
+		<option>.*</option>
+		<option>Other...</option>
+	      </select>
+	    </td>
 	    <td>Fwd/Rev</td>
 	    <td>Sequence Tags</td>
 	  </tr>
 	</thead>
 	<!-- footer for seqfile list -->
 	<tfoot>
-	  <tr><td><font class="fwd">Forward</font> - <font class="rev">Reverse</font> - <font class="bad">Bad</font></td></tr>
+	  <tr><td>&nbsp;</td></tr>
 	</tfoot>
       </table>
       
@@ -76,12 +83,6 @@ See attributions at the bottom for CC
 	  <tr>
 	    <td>
 	      Grouping
-	      <select id="group_regexp" onChange="changeGrouping();">
-		<option>_(RowColumn)$</option>
-		<option>S\d+-Seq\d+-(.*?)_</option>
-		<option>.*</option>
-		<option>Other...</option>
-	      </select>
 	    </td>
 	    <td>Size</td></tr>
 	</thead>
