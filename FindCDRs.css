@@ -78,6 +78,7 @@ seqtags {
     width: 90%;
 
     margin: 5%;
+    padding: 10px;
     border: 1px dashed black;
 
     clear: both;
@@ -228,6 +229,18 @@ img.button:hover {
 img.button:active {
     box-shadow: 2px 2px 3px black;
     width: 38px;
+}
+
+img.pressed {
+    width: 38px;
+    margin: 0px 10px 10px 10px;
+    padding: 5px;
+
+    background-color: #fffd91;
+    
+    border: 2px solid #357adb;
+    border-radius: 10px;
+    box-shadow: 2px 2px 3px black;
 }
 
 

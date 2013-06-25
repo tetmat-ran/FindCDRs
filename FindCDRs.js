@@ -21,6 +21,8 @@ http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-t
 var version = "0.200";
 
 // Global variables... yikes?
+var messageBox = 0;
+
 var seqFiles = [];
 var seqGroups = [];
 var seqInGroups = [];
@@ -64,9 +66,11 @@ function SeqFile(f, i) {
 }
 
 // SeqFile constants
-SeqFile.prototype.CDRs_id = ["LC", "HC1", "HC2", "HC3"];
-SeqFile.prototype.sequenceTagIDs = ["LC_5", "LC_3", "HC1_5", "HC1_3", "HC2_5", "HC2_3", "HC3_5", "HC3_3"];
 SeqFile.prototype.sequenceTags = ["TACTGTCAGCAA", "ACGTTCGGACAG", "TCTGGCTTCAAC", "CACTGGGTGCGT", "GAATGGGTTGCA", "TATGCCGATAGC", "TATTGTGCTCGC", "GACTACTGGGGT"];
+SeqFile.prototype.sequenceTagIDs = ["LC_5", "LC_3", "HC1_5", "HC1_3", "HC2_5", "HC2_3", "HC3_5", "HC3_3"];
+SeqFile.prototype.sequenceTagSymbols = ["[", "]", "[", "]", "[", "]", "[", "]"];
+SeqFile.prototype.CDRs_id = ["LC", "HC1", "HC2", "HC3"];
+SeqFile.prototype.CDRs_pos = [1, 4, 7, 10];
 
 SeqFile.prototype.getSeq = function () {
     var reader = new FileReader();
@@ -185,9 +189,34 @@ SeqFile.prototype.addToTable = function () {
     this.tableRow.appendChild(this.tableDirection);
 
     this.tableSeqTags = document.createElement('td');
-    this.tableSeqTags.innerHTML = '<seqtags>o <font id="' + this.i + '_LC_5">[</font> <font id="' + this.i + '_LC">LC</font> <font id="' + this.i + '_LC_3">]</font> o o o <font id="' + this.i + '_HC1_5">[</font> <font id="' + this.i + '_HC1">HC1</font> <font id="' + this.i + '_HC1_3">]</font> o <font id="' + this.i + '_HC2_5">[</font> <font id="' + this.i + '_HC2">HC2</font> <font id="' + this.i + '_HC2_3">]</font> o <font id="' + this.i + '_HC3_5">[</font> <font id="' + this.i + '_HC3">HC3</font> <font id="' + this.i + '_HC3_3">]</font> o o</seqtags>';
-    this.tableRow.appendChild(this.tableSeqTags);
 
+    this.sequenceTagElement = document.createElement("seqtags");
+    this.sequenceTagElements = [];
+
+    for (sequenceTag in this.sequenceTags) {
+	var tagElement = document.createElement("font");
+	tagElement.id = this.i + "_" + this.sequenceTagIDs[sequenceTag];
+	tagElement.innerHTML = this.sequenceTagSymbols[sequenceTag] + " ";
+
+	this.sequenceTagElements.push(tagElement);
+    }
+
+    for (iCDR in this.CDRs_id) {
+	var CDRElement = document.createElement("font");
+	CDRElement.id = this.i + "_" + this.CDRs_id[iCDR];
+	CDRElement.innerHTML = this.CDRs_id[iCDR] + " ";
+
+	this.sequenceTagElements.splice(this.CDRs_pos[iCDR], 0, CDRElement);
+    }
+    
+    for (var iSeqTag in this.sequenceTagElements) {
+	this.sequenceTagElement.appendChild(this.sequenceTagElements[iSeqTag]);
+    }
+
+    document.getElementById("comments").appendChild(this.sequenceTagElement);
+
+    this.tableSeqTags.appendChild(this.sequenceTagElement);
+    this.tableRow.appendChild(this.tableSeqTags);
     document.getElementById('table_seqfiles').appendChild(this.tableRow);
 }
 
@@ -263,7 +292,7 @@ function processFiles(files) {
 	} else if (f.name.substr(-4, 4) == ".ab1") {
 	    // TODO: Add support for .ab1 files
 	} else {
-	    document.getElementById("drop_zone_message_box").innerHTML += "Ignoring " + escape(f.name) + "<br />";
+	    document.getElementById("comments").innerHTML += "Ignoring " + escape(f.name) + "<br />";
 	}
     }
 
@@ -480,5 +509,20 @@ function describe(obj) {
     var commentBox = document.getElementById("comments");
     for (elm in obj) {
 	commentBox.innerHTML += elm + ": " + obj[elm] + "<br />\n";
+    }
+}
+
+function toggleMessageBox() {
+    messageBoxDom = document.getElementById("comment_box");
+    messageBoxButton = document.getElementById("show_comments");
+
+    if (messageBox) {
+	messageBoxButton.className = "button";
+	messageBoxDom.style.display = "none";
+	messageBox = 0;
+    } else {
+	messageBoxButton.className = "pressed";
+	messageBoxDom.style.display = "block";
+	messageBox = 1;
     }
 }
