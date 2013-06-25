@@ -21,6 +21,8 @@ http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-t
 var version = "0.200";
 
 // Global variables... yikes?
+var startDate = new Date();
+
 var seqFiles = [];
 var seqGroups = [];
 var seqInGroups = [];
@@ -231,6 +233,8 @@ function init() {
     var dropZone = document.getElementById('drop_zone');
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleDrop, false);
+
+    document.getElementById("comments").innerHTML += "Start time: " + getTimestamp(startTime) + "<br />\n";
 }
 
 // Drop zone
@@ -268,6 +272,7 @@ function processFiles(files) {
     }
 
     makeGroups();
+    reportTime();
 }
 
 function makeGroups() {
@@ -481,4 +486,12 @@ function describe(obj) {
     for (elm in obj) {
 	commentBox.innerHTML += elm + ": " + obj[elm] + "<br />\n";
     }
+}
+
+function reportTime() {
+    var now = new Date();
+    var elapsed = (now.getTime() - startDate.getTime()) / 1000;
+    var timeMessage = elapsed + " seconds have elapsed.";
+    document.getElementById('comments').innerHTML += timeMessage + "<br />\n";
+    alert(timeMessage);
 }
