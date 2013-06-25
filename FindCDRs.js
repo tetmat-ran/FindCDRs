@@ -493,5 +493,4 @@ function reportTime() {
     var elapsed = (now.getTime() - startDate.getTime()) / 1000;
     var timeMessage = elapsed + " seconds have elapsed.";
     document.getElementById('comments').innerHTML += timeMessage + "<br />\n";
-    alert(timeMessage);
 }
