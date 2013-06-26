@@ -194,14 +194,16 @@ SeqFile.prototype.addToTable = function () {
     this.tableName.appendChild(document.createTextNode(escape(this.name)));
     this.tableRow.appendChild(this.tableName);
 
+    this.tableGroupName = document.createElement('td');
+    this.tableRow.appendChild(this.tableGroupName);
+
     this.tableDirection = document.createElement('td');
+    this.tableDirection.className = "direction";
     this.tableRow.appendChild(this.tableDirection);
 
     this.tableSeqTags = document.createElement('td');
-
     this.sequenceTagElement = document.createElement("seqtags");
     this.sequenceTagElements = [];
-
     for (sequenceTag in this.sequenceTags) {
 	var tagElement = document.createElement("font");
 	tagElement.id = this.i + "_" + this.sequenceTagIDs[sequenceTag];
@@ -210,12 +212,9 @@ SeqFile.prototype.addToTable = function () {
 	this.sequenceTagElements.push(tagElement);
 	this.sequenceTagElement.appendChild(tagElement);
     }
-
-    document.getElementById("comments").appendChild(this.sequenceTagElement);
-
     this.tableSeqTags.appendChild(this.sequenceTagElement);
     this.tableRow.appendChild(this.tableSeqTags);
-    // document.getElementById('table_seqfiles').appendChild(this.tableRow);
+
 }
 
 SeqFile.prototype.assignForward = function () {
@@ -233,6 +232,7 @@ SeqFile.prototype.assignReverse = function () {
 SeqFile.prototype.invalidate = function () {
     this.valid = 0;
     this.tableRow.className = "bad";
+    this.tableDirection.innerHTML = "n/a";
 }
 
 SeqFile.prototype.getGroupTaggedName = function () {
@@ -319,6 +319,7 @@ function makeGroups() {
 	if (!m) {
 	    seqFiles[seqFile].group = -1;
 	    seqNotInGroups.push(seqFiles[seqFile].i);
+	    seqFiles[seqFile].tableGroupName.innerHTML = "n/a";
 	} else {
 
 	    // The group identifier is either the full match to the regexp, or
@@ -327,6 +328,8 @@ function makeGroups() {
 	    // Note where in the name the identifier is (because sometimes the same identifier can occur more than once)
 	    seqFiles[seqFile].groupIdentifierAt = 
 		seqFiles[seqFile].name.slice(m.index, seqFiles[seqFile].name.length).indexOf(group_identifier) + m.index;
+
+	    seqFiles[seqFile].tableGroupName.innerHTML = group_identifier;
 
 	    var iGroup = seqGroups.indexOf(group_identifier); // is the identifier already in a group?
 
