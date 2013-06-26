@@ -130,7 +130,7 @@ SeqFile.prototype.processContent = function (fileContent) {
 
 SeqFile.prototype.findSequenceTags = function () {
     var nPositives = 0;
-    positions = [];
+    var positions = [];
     for (var tag in this.sequenceTags) {
 	var pos = -1;
 	// Don't search for the "CDR's", they are not sequence tags
@@ -138,7 +138,7 @@ SeqFile.prototype.findSequenceTags = function () {
 	    pos = this.sequence.indexOf(this.sequenceTags[tag])
 	    if (pos != -1) {
 		nPositives++;
-		document.getElementById(this.i + "_" + this.sequenceTagIDs[tag]).style.color = "black";
+		this.sequenceTagElements[tag].style.color = "black";
 	    }
 	}
 	positions.push(pos);
@@ -154,13 +154,13 @@ SeqFile.prototype.findSequenceTags = function () {
 SeqFile.prototype.findCDRs = function () {
     this.CDRs_dna = [];
     
-    for (iCDR in this.CDRs_id) {
+    for (var iCDR in this.CDRs_id) {
 	var seq_dna = "";
 
 	// Check to see whether boundary tags are found
 	iSeqTag = this.sequenceTagIDs.indexOf(this.CDRs_id[iCDR]);
 	if (this.seqTagPositions[iSeqTag - 1] != -1 &&
-	    this.seqTagPositions[iSeqTag + 1]) {
+	    this.seqTagPositions[iSeqTag + 1] != -1) {
 
 	    // If so, bounded region contains the CDR
 	    seq_dna = this.sequence.slice(this.seqTagPositions[iSeqTag - 1] + this.sequenceTags[iSeqTag - 1].length,
@@ -172,14 +172,15 @@ SeqFile.prototype.findCDRs = function () {
 }
 
 SeqFile.prototype.translateCDRs = function () {
-    for (iCDR = 0; iCDR < 4; iCDR++) {
+    for (var iCDR in this.CDRs_id) {
 	// CDR sequence information is available
 	if (this.CDRs_dna[iCDR] != "") {
 	    // Does it code valid triplet aa's?
 	    if (this.CDRs_dna[iCDR].length % 3 != 0) {
-		document.getElementById(this.i + "_" + this.CDRs_id[iCDR]).style.color = "red";
+		this.sequenceTagElements[this.sequenceTagIDs.indexOf(this.CDRs_id[iCDR])].style.color = "red";
+		message(this.CDRs_dna[iCDR]);
 	    } else {
-		document.getElementById(this.i + "_" + this.CDRs_id[iCDR]).style.color = "black";
+		this.sequenceTagElements[this.sequenceTagIDs.indexOf(this.CDRs_id[iCDR])].style.color = "black";
 	    }
 	}
     }
@@ -508,6 +509,10 @@ function describe(obj) {
     for (elm in obj) {
 	commentBox.innerHTML += elm + ": " + obj[elm] + "<br />\n";
     }
+}
+
+function message(msg) {
+    document.getElementById('comments').innerHTML += msg + "<br />\n";
 }
 
 function toggleMessageBox() {
