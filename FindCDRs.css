@@ -116,6 +116,21 @@ thead>tr>td:first-child {
 thead>tr>td:last-child {
     border-top-right-radius: 20px;
 }
+
+
+#table_seqfiles>tfoot+tr>td, tr.group_border+tr>td {
+    padding-top: 4px;
+}
+
+#table_seqfiles>tr>td:first-child {
+    padding-left: 10px;
+}
+
+tr.group_border>td {
+    border-bottom: 1px dotted black;
+    height: 4px;
+}
+
 /*
 tr.fwd { background-color: #d9e9fe; }
 tr.fwd:hover { background-color: #9ac4fe; }

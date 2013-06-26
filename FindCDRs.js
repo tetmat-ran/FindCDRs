@@ -376,8 +376,10 @@ function createTableByGroups() {
 	    singleTable.appendChild(seqFiles[seqInGroups[iGroup][iSeq]].tableRow);
 	}
 	var groupBorder = document.createElement('tr');
+	groupBorder.className = "group_border";
+
 	var groupBorderTD = document.createElement('td');
-	groupBorderTD.style.border = "1px solid black";
+	groupBorderTD.colSpan = "100";
 
 	groupBorder.appendChild(groupBorderTD);
 	singleTable.appendChild(groupBorder);
