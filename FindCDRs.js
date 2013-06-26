@@ -304,7 +304,6 @@ function makeGroups() {
 
     resetGroups();
 
-    var groupTable = document.getElementById("table_grouping");
     var singleTable = document.getElementById("table_seqfiles");
 
     // Pull the RegExp from the dropdown menu to use for grouping sequences
@@ -319,23 +318,6 @@ function makeGroups() {
 	if (!m) {
 	    seqFiles[seqFile].group = -1;
 	    seqNotInGroups.push(seqFiles[seqFile].i);
-
-	    // Add to grouping by itself as non-group
-	    var newGroupSeq = document.createElement("td");
-	    newGroupSeq.innerHTML = seqFiles[seqFile].name;
-
-	    var newGroupSize = document.createElement("td");
-	    newGroupSize.innerHTML = "0";
-
-	    var newGroup = document.createElement("tr");
-	    newGroup.className = "nongroup";
-	    newGroup.appendChild(newGroupSeq);
-	    newGroup.appendChild(newGroupSize);
-
-	    groupTable.appendChild(newGroup);
-	    // singleTable.appendChild(seqFiles[seqFile].tableRow);
-	    
-
 	} else {
 
 	    // The group identifier is either the full match to the regexp, or
@@ -352,36 +334,13 @@ function makeGroups() {
 		seqFiles[seqFile].group = iGroup = seqGroups.length; // new group
 		seqGroups.push(group_identifier);
 		seqInGroups.push([seqFiles[seqFile].i]);
-
-		// Add to grouping by itself as non-group
-		var newGroupSeqs = document.createElement("td");
-		newGroupSeqs.id = iGroup + "_groupSeqs";
-		newGroupSeqs.innerHTML = seqFiles[seqFile].getGroupTaggedName();
-
-		var newGroupSize = document.createElement("td");
-		newGroupSize.id = iGroup + "_groupSize";
-		newGroupSize.innerHTML = "1";
-
-		var newGroup = document.createElement("tr");
-		newGroup.appendChild(newGroupSeqs);
-		newGroup.appendChild(newGroupSize);
-
-		groupTable.appendChild(newGroup);
-		// singleTable.appendChild(seqFiles[seqFile].tableRow);
-
 	    } else {
 		seqFiles[seqFile].group = iGroup;
 		seqInGroups[iGroup].push(seqFiles[seqFile].i);
-
-		var thisGroupSeqs = document.getElementById(iGroup + "_groupSeqs");
-		thisGroupSeqs.innerHTML += "<br />" + seqFiles[seqFile].getGroupTaggedName();
-
-		var thisGroupSize = document.getElementById(iGroup + "_groupSize");
-		thisGroupSize.innerHTML = parseInt(thisGroupSize.innerHTML) + 1;
 	    }
 	} // end if (!m)
 
-	// Single table
+	// Add to table
 	seqFiles[seqFile].tableName.innerHTML = seqFiles[seqFile].getGroupTaggedName(); // Highlight the seqname with the group identifier
     }
 }
@@ -391,12 +350,7 @@ function resetGroups() {
     seqInGroups = [];
     seqNotInGroups = [];
 
-    var groupTable = document.getElementById("table_grouping");
     var singleTable = document.getElementById("table_seqfiles");
-
-    while (groupTable.rows.length > 2) {
-	groupTable.deleteRow(1);
-    }
 
     while (singleTable.rows.length > 2) {
 	singleTable.deleteRow(1);

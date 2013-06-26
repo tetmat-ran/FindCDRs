@@ -101,16 +101,8 @@ table {
     min-width: 500px;
 }
 
-#table_grouping {
-    min-width: 300px;
-}
-
 #table_seqfiles>thead {
-    background-color: #357adb;
-}
-
-#table_grouping>thead {
-    background-color: #357adb;
+    background-color: #4fdd29;
 }
 
 thead>tr {
@@ -135,7 +127,7 @@ tr.bad:hover { background-color: #ff919e; }
 
 .seq_list>tr>td {
     padding: 1px 5px 0px 5px;
-    font-size: small;
+    font-size: x-small;
     white-space: nowrap;
 }
 
@@ -173,17 +165,12 @@ font.bad { color: #de293f; }
 /* GROUPING */
 #group_regexp {
     margin-left: 10px;
-    background-color: #9ac4fe;
+    background-color: #dfffd6;
 }
 
 grouptag {
     color: #357adb;
     font-weight: bold;
-}
-
-#table_grouping>tr>td {
-    border-bottom: 1px dotted black;
-    vertical-align: top;
 }
 
 .nongroup>td {
