@@ -47,6 +47,8 @@ var gencode = {
     'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',
     'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W'};
 
+zip.useWebWorkers = false;
+
 // Objects / Classes
 function SeqFile(f, i) {
     this.i = i;
@@ -62,7 +64,8 @@ function SeqFile(f, i) {
 
     this.lastModifiedDate = getTimestamp(f.lastModifiedDate);
 
-    this.addToTable(); // Should be renamed to createRowElement
+    this.tableRow = this.createRowElement(); // Should be renamed to createRowElement
+
     this.getSeq();
 }
 
@@ -186,20 +189,20 @@ SeqFile.prototype.translateCDRs = function () {
     }
 }
 
-SeqFile.prototype.addToTable = function () {
-    this.tableRow = document.createElement('tr');
-    this.tableRow.className = "processing";
+SeqFile.prototype.createRowElement = function () {
+    var tableRow = document.createElement('tr');
+    tableRow.className = "processing";
 
     this.tableName = document.createElement('td');
     this.tableName.appendChild(document.createTextNode(escape(this.name)));
-    this.tableRow.appendChild(this.tableName);
+    tableRow.appendChild(this.tableName);
 
     this.tableGroupName = document.createElement('td');
-    this.tableRow.appendChild(this.tableGroupName);
+    tableRow.appendChild(this.tableGroupName);
 
     this.tableDirection = document.createElement('td');
     this.tableDirection.className = "direction";
-    this.tableRow.appendChild(this.tableDirection);
+    tableRow.appendChild(this.tableDirection);
 
     this.tableSeqTags = document.createElement('td');
     this.sequenceTagElement = document.createElement("seqtags");
@@ -213,8 +216,9 @@ SeqFile.prototype.addToTable = function () {
 	this.sequenceTagElement.appendChild(tagElement);
     }
     this.tableSeqTags.appendChild(this.sequenceTagElement);
-    this.tableRow.appendChild(this.tableSeqTags);
+    tableRow.appendChild(this.tableSeqTags);
 
+    return tableRow;
 }
 
 SeqFile.prototype.assignForward = function () {
@@ -291,6 +295,23 @@ function processFiles(files) {
 	    seqFiles.push(new SeqFile(f, seqFiles.length));
 	} else if (f.name.substr(-4, 4) == ".ab1") {
 	    // TODO: Add support for .ab1 files
+	} else if (f.name.substr(-4, 4) == ".zip") {
+	    zip.createReader(new zip.BlobReader(f), function(reader) {
+		reader.getEntries(function (entries) {
+		    message(entries[0].filename);
+
+		    for (entry in entries) {
+			message(entries[entry].filename);
+			if (entries[entry].filename.substr(-4, 4) == ".seq") {
+			    entries[entry].getData(new zip.TextWriter(), function(text) {
+				message(text);
+			    });
+			}
+		    }
+		    reader.close(function() {} );
+		});
+	    });
+	    message("Zipfile!");
 	} else {
 	    document.getElementById("comments").innerHTML += "Ignoring " + escape(f.name) + "<br />";
 	}

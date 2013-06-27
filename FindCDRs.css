@@ -82,7 +82,7 @@ seqtags {
     border: 1px dashed black;
 
     clear: both;
-    display: none;
+    /*display: none;*/
 }
 
 table {
