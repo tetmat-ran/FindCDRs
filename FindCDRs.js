@@ -20,6 +20,9 @@ http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-t
 
 var version = "0.200";
 
+// zip.js configuration
+zip.useWebWorkers = false;
+
 // Global variables... yikes?
 var messageBox = 0;
 var startDate = new Date();
@@ -47,8 +50,6 @@ var gencode = {
     'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',
     'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W'};
 
-zip.useWebWorkers = false;
-
 // Objects / Classes
 function SeqFile(f, i) {
     this.i = i;
@@ -64,7 +65,7 @@ function SeqFile(f, i) {
 
     this.lastModifiedDate = getTimestamp(f.lastModifiedDate);
 
-    this.tableRow = this.createRowElement(); // Should be renamed to createRowElement
+    this.tableRow = this.createRowElement();
 
     this.getSeq();
 }
