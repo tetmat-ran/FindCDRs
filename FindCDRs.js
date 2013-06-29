@@ -52,7 +52,6 @@ var gencode = {
 
 // Objects / Classes
 function SeqFile(f, i) {
-    this.i = i;
     this.file = f;
     this.filename = f.name;
     this.name = f.name.substr(0, f.name.length - 4);
@@ -182,7 +181,6 @@ SeqFile.prototype.translateCDRs = function () {
 	    // Does it code valid triplet aa's?
 	    if (this.CDRs_dna[iCDR].length % 3 != 0) {
 		this.sequenceTagElements[this.sequenceTagIDs.indexOf(this.CDRs_id[iCDR])].style.color = "red";
-		message(this.CDRs_dna[iCDR]);
 	    } else {
 		this.sequenceTagElements[this.sequenceTagIDs.indexOf(this.CDRs_id[iCDR])].style.color = "black";
 	    }
@@ -210,7 +208,6 @@ SeqFile.prototype.createRowElement = function () {
     this.sequenceTagElements = [];
     for (sequenceTag in this.sequenceTags) {
 	var tagElement = document.createElement("font");
-	tagElement.id = this.i + "_" + this.sequenceTagIDs[sequenceTag];
 	tagElement.innerHTML = this.sequenceTagSymbols[sequenceTag] + " ";
 
 	this.sequenceTagElements.push(tagElement);
@@ -340,7 +337,7 @@ function makeGroups() {
 	// this is a lone sequence with no group identifier
 	if (!m) {
 	    seqFiles[seqFile].group = -1;
-	    seqNotInGroups.push(seqFiles[seqFile].i);
+	    seqNotInGroups.push(seqFiles[seqFile]);
 	    seqFiles[seqFile].tableGroupName.innerHTML = "n/a";
 	} else {
 
@@ -359,10 +356,10 @@ function makeGroups() {
 	    if (iGroup == -1) {
 		seqFiles[seqFile].group = iGroup = seqGroups.length; // new group
 		seqGroups.push(group_identifier);
-		seqInGroups.push([seqFiles[seqFile].i]);
+		seqInGroups.push([seqFiles[seqFile]]);
 	    } else {
 		seqFiles[seqFile].group = iGroup;
-		seqInGroups[iGroup].push(seqFiles[seqFile].i);
+		seqInGroups[iGroup].push(seqFiles[seqFile]);
 	    }
 	} // end if (!m)
 
@@ -399,7 +396,7 @@ function createTableByGroups() {
     var singleTable = document.getElementById("table_seqfiles");
     for (iGroup in seqInGroups) {
 	for (iSeq in seqInGroups[iGroup]) {
-	    singleTable.appendChild(seqFiles[seqInGroups[iGroup][iSeq]].tableRow);
+	    singleTable.appendChild(seqInGroups[iGroup][iSeq].tableRow);
 	}
 	var groupBorder = document.createElement('tr');
 	groupBorder.className = "group_border";
@@ -412,7 +409,7 @@ function createTableByGroups() {
     }
 
     for (iSeq in seqNotInGroups) {
-	singleTable.appendChild(seqFiles[seqNotInGroups[iSeq]].tableRow);
+	singleTable.appendChild(seqNotInGroups[iSeq].tableRow);
     }
 }
 
