@@ -534,15 +534,13 @@ function saveTextAsFile()
 	var CDRs_dna = [[], [], [], []];
 	var CDRs_aa = [[], [], [], []];
 
-	for (seq_i in seqInGroups[iGroup]) {
-	    var iSeq = seqInGroups[iGroup][seq_i];
-
-	    seqs.push(seqFiles[iSeq].name);
+	for (var iSeq in seqInGroups[iGroup]) {
+	    seqs.push(seqInGroups[iGroup][iSeq].name);
 
 	    for (iCDR in CDRs_dna) {
-		if (seqFiles[iSeq].CDRs_dna[iCDR] != "") {
-		    CDRs_dna[iCDR].push(seqFiles[iSeq].CDRs_dna[iCDR]);
-		    CDRs_aa[iCDR].push(translate(seqFiles[iSeq].CDRs_dna[iCDR]));
+		if (seqInGroups[iGroup][iSeq].CDRs_dna[iCDR] != "") {
+		    CDRs_dna[iCDR].push(seqInGroups[iGroup][iSeq].CDRs_dna[iCDR]);
+		    CDRs_aa[iCDR].push(translate(seqInGroups[iGroup][iSeq].CDRs_dna[iCDR]));
 		}
 	    }
 	}
@@ -562,9 +560,9 @@ function saveTextAsFile()
     }
 
     // Those not in groups
-    for (var iGroup in seqNotInGroups) {
+    for (var iSeq in seqNotInGroups) {
 
-	var seq = seqFiles[seqNotInGroups[iGroup]];
+	var seq = seqNotInGroups[iSeq];
 	var lineElements = [seq.name,
 			    translate(seq.CDRs_dna[0]),
 			    translate(seq.CDRs_dna[1]),
