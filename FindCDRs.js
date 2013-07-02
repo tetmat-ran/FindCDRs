@@ -394,8 +394,6 @@ function makeGroups() {
 
     resetGroups();
 
-    var singleTable = document.getElementById("table_seqfiles");
-
     // Pull the RegExp from the dropdown menu to use for grouping sequences
     // Remember to escape \ with \\
     var re_grouping = new RegExp(makeRegExp(document.getElementById("group_regexp").value));
@@ -462,24 +460,33 @@ function changeGrouping() {
 }
 
 function createTableByGroups() {
-    var singleTable = document.getElementById("table_seqfiles");
+    var singleTable = document.createDocumentFragment(); // instead of adding directly to existing table <= faster
+
+    // Group Border Element
+    var groupBorder = document.createElement('tr');
+    groupBorder.className = "group_border";
+    var groupBorderTD = document.createElement('td');
+    groupBorderTD.colSpan = "100";
+    groupBorder.appendChild(groupBorderTD);
+
+    // Add ungrouped sequences first
+    for (iSeq in seqNotInGroups) {
+	singleTable.appendChild(seqNotInGroups[iSeq].tableRow);
+    }
+
+    if (seqNotInGroups.length > 0) {
+	singleTable.appendChild(groupBorder.cloneNode(true));
+    }
+
+    // Add grouped sequences
     for (iGroup in seqInGroups) {
 	for (iSeq in seqInGroups[iGroup]) {
 	    singleTable.appendChild(seqInGroups[iGroup][iSeq].tableRow);
 	}
-	var groupBorder = document.createElement('tr');
-	groupBorder.className = "group_border";
-
-	var groupBorderTD = document.createElement('td');
-	groupBorderTD.colSpan = "100";
-
-	groupBorder.appendChild(groupBorderTD);
-	singleTable.appendChild(groupBorder);
+	singleTable.appendChild(groupBorder.cloneNode(true));
     }
 
-    for (iSeq in seqNotInGroups) {
-	singleTable.appendChild(seqNotInGroups[iSeq].tableRow);
-    }
+    document.getElementById("table_seqfiles").appendChild(singleTable);
 }
 
 function makeRegExp(str) {
