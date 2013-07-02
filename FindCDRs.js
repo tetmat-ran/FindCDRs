@@ -9,7 +9,7 @@ Extracting CDR sequences from LC and HC sequencing results
 
 Tet Matsuguchi <tet@alum.mit.edu>
 
-Last modified: Jun 16, 2013 (v0.2)
+Last modified: Jul 02, 2013 (v0.500)
  
 Many lines on FileReader have been borrowed from:
 http://www.html5rocks.com/en/tutorials/file/dndfiles/
@@ -18,17 +18,20 @@ http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-t
 
 */
 
-var version = "0.200";
+var version = "0.500";
 
 // zip.js configuration
 zip.useWebWorkers = false;
 
 // Global variables... yikes?
 var allowZipFiles = true;
-var allowAB1Files = false;
+var allowAB1Files = true;
 
 var messageBox = 0;
 var startDate = new Date();
+
+var nSeqFilesPending = 0;
+var nSeqFilesProcessed = 0;
 
 var seqFiles = [];
 var seqGroups = [];
@@ -90,21 +93,25 @@ SeqFile.prototype.CDRs_id = ["LC", "HC1", "HC2", "HC3"];
 
 
 SeqFile.prototype.getSeq = function () {
+    nSeqFilesPending++;
 
     var seqFile = this;
     if (this.compressed) {
 	// unzip contents using zip.js
-	this.file.getData(new zip.TextWriter(), function(text) {
-	    seqFile.processContent(text);
-	});
-
+	this.file.getData(new zip.TextWriter(), 
+			  function(text) { // onend callback function from uncompressing a file
+			      seqFile.processContent(text);
+			      nSeqFilesPending--;
+			      nSeqFilesProcessed++;
+			  });
     } else {
 	// Uncompressed; use regular FileReader
 	var reader = new FileReader();
 	reader.onload = function (e) { 
 	    seqFile.processContent(e.target.result);
+	    nSeqFilesPending--;
+	    nSeqFilesProcessed++;
 	}
-	
 	reader.readAsText(this.file);
     }
 }
@@ -310,10 +317,10 @@ function handleFileSelect(evt) {
 }
 
 function processInputFiles(files) {
+    status("Reading files...");
     processFiles(files);
-    makeGroups();
-    createTableByGroups();
-    reportTime();
+
+    waitForProcessingFiles();
 }
 
 // Processing Files
@@ -330,15 +337,56 @@ function processFiles(files) {
 	} else if (f.name.substr(-4, 4) == ".ab1" && allowAB1Files) {
 	    // TODO: Add support for .ab1 files
 	} else if (f.name.substr(-4, 4) == ".zip" && allowZipFiles) {
-	    zip.createReader(new zip.BlobReader(f), function(reader) {
-		reader.getEntries(function (entries) {
-		    processFiles(entries);
-		    reader.close(function() {} );
-		});
-	    });
+	    status("Unzipping files...");
+	    nSeqFilesPending++;
+	    zip.createReader(new zip.BlobReader(f), 
+			     function(reader) { // callback function
+				 reader.getEntries(function (entries) {
+				     processFiles(entries);
+				     nSeqFilesPending--;
+				     // nSeqFilesProcessed++; // don't count zipfile
+				     reader.close(function() {} );
+				 });
+			     },
+			    function (error) { // onerror during zipfile reading
+				nSeqFilesPending--;
+				// nSeqFilesProcessed++; // don't count zipfile
+				message("Unzipping " + f.name + " failed... Skpping.");
+			    });
 	} else {
 	    document.getElementById("comments").innerHTML += "Ignoring " + escape(f.name) + "<br />";
 	}
+    }
+}
+
+function waitForProcessingFiles() {
+    // document.getElementById("nFiles").innerHTML = "<br />" + nSeqFilesProcessed + "/" + seqFiles.length + "<br />";
+    //document.getElementById("seqFilesProcessed").innerHTML = nSeqFilesProcessed;
+    //document.getElementById("totalSeqFiles").innerHTML = seqFiles.length;
+
+    // document.getElementById("statusBar").style.width = (100.0 * nSeqFilesProcessed / seqFiles.length) + "%";
+    // document.getElementById("statusBar").innerHTML = nSeqFilesProcessed + " / " + seqFiles.length;
+    if (seqFiles.length == 0) {
+	status("Unzipping files...");
+    } else {
+	status("Reading files... " + nSeqFilesProcessed + " / " + seqFiles.length);
+    }
+
+    if (nSeqFilesPending) {
+	window.setTimeout(function() { waitForProcessingFiles(); }, 100);
+    } else {
+	reportGroups();
+    }
+}
+
+function reportGroups() {
+    status("Grouping sequences...");
+    if (nSeqFilesPending) {
+	window.setTimeout(function() { reportGroups(); }, 100);
+    } else {
+	makeGroups();
+	createTableByGroups();
+	status("Done processing!");
     }
 }
 
@@ -410,8 +458,7 @@ function changeGrouping() {
 	regexpDOM.selectedIndex = regexpDOM.length - 1;
     }
 
-    makeGroups();
-    createTableByGroups();
+    reportGroups();
 }
 
 function createTableByGroups() {
@@ -572,6 +619,10 @@ function toggleMessageBox() {
 	messageBoxDom.style.display = "block";
 	messageBox = 1;
     }
+}
+
+function status(msg) {
+    document.getElementById("statusBox").innerHTML = msg;
 }
 
 function reportTime() {

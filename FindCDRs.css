@@ -17,6 +17,10 @@ seqtags {
     color: #357adb;
 }
 
+.red_highlight {
+    color: #e74558;
+}
+
 #title {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -82,10 +86,12 @@ seqtags {
     border: 1px dashed black;
 
     clear: both;
-    /*display: none;*/
+    display: none;
 }
 
-table {
+#table_seqfiles {
+    min-width: 500px;
+
     margin: 20px 5% 20px 5%;
     padding: 5px;
 
@@ -95,10 +101,6 @@ table {
     border-spacing: 0px 0px;
     border-radius: 20px;
     box-shadow: 5px 5px 5px grey;
-}
-
-#table_seqfiles {
-    min-width: 500px;
 }
 
 #table_seqfiles>thead {
@@ -212,6 +214,36 @@ grouptag {
 .nongroup>td {
     background-color: #ffd6db;
     background-color: #ff919e;
+}
+
+#statusBox {
+    width: 300px;
+    height: 40px;
+
+    margin: 0px 10px 10px 10px;
+    padding: 5px 5px 5px 20px;
+
+    background-color: #d9e9fe;
+    
+    border: 2px solid #357adb;
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px black;
+
+    line-height: 40px;
+}
+
+#statusBar {
+
+    width: 0%;
+    height: 20px;
+    background-color: red;
+
+    text-align: center;
+    white-space: nowrap;
+
+    border: 1px solid black;
+
+    float: left;
 }
 
 #controls {
