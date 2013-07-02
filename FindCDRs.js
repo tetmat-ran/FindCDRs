@@ -24,6 +24,9 @@ var version = "0.200";
 zip.useWebWorkers = false;
 
 // Global variables... yikes?
+var allowZipFiles = true;
+var allowAB1Files = false;
+
 var messageBox = 0;
 var startDate = new Date();
 
@@ -51,21 +54,31 @@ var gencode = {
     'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W'};
 
 // Objects / Classes
-function SeqFile(f, i) {
-    this.file = f;
-    this.filename = f.name;
-    this.name = f.name.substr(0, f.name.length - 4);
-    this.size = f.size;
+function SeqFile(f) {
 
+    // Initialize
+    this.file = f;
     this.valid = 1; // Innocent unless proven guilty
     this.direction = ""; // "fwd" or "rev"
     this.group = -1;
     this.CDRs_dna = ["", "", "", ""];
 
-    this.lastModifiedDate = getTimestamp(f.lastModifiedDate);
+    // File information depends on compressed (zipped) vs uncompressed
+    this.compressed = typeof f.compressedSize !== 'undefined';
+
+    if (this.compressed) {
+	this.filename = f.filename;
+	this.size = f.uncompressedSize;
+	this.lastModifiedDate = getTimestamp(f.lastModDate);
+    } else {
+	this.filename = f.name;
+	this.size = f.size;
+	this.lastModifiedDate = getTimestamp(f.lastModifiedDate);
+    }
+
+    this.name = this.filename.substr(0, this.filename.length - 4);
 
     this.tableRow = this.createRowElement();
-
     this.getSeq();
 }
 
@@ -75,14 +88,25 @@ SeqFile.prototype.sequenceTagIDs = ["LC_5", "LC", "LC_3", "HC1_5", "HC1", "HC1_3
 SeqFile.prototype.sequenceTagSymbols = ["[", "LC", "]", "[", "HC1", "]", "[", "HC2", "]", "[", "HC3", "]"];
 SeqFile.prototype.CDRs_id = ["LC", "HC1", "HC2", "HC3"];
 
-SeqFile.prototype.getSeq = function () {
-    var reader = new FileReader();
-    var seqFile = this;
-    reader.onload = function (e) { 
-	seqFile.processContent(e.target.result);
-    }
 
-    reader.readAsText(this.file);
+SeqFile.prototype.getSeq = function () {
+
+    var seqFile = this;
+    if (this.compressed) {
+	// unzip contents using zip.js
+	this.file.getData(new zip.TextWriter(), function(text) {
+	    seqFile.processContent(text);
+	});
+
+    } else {
+	// Uncompressed; use regular FileReader
+	var reader = new FileReader();
+	reader.onload = function (e) { 
+	    seqFile.processContent(e.target.result);
+	}
+	
+	reader.readAsText(this.file);
+    }
 }
 
 SeqFile.prototype.processContent = function (fileContent) {
@@ -277,47 +301,45 @@ function handleDrop(evt) {
 
     var files = evt.dataTransfer.files; // FileList object.
 
-    processFiles(files);
+    processInputFiles(files);
 }
 
 function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
+    processInputFiles(files);
+}
+
+function processInputFiles(files) {
     processFiles(files);
+    makeGroups();
+    createTableByGroups();
+    reportTime();
 }
 
 // Processing Files
 function processFiles(files) {
+
     for (var i = 0, f; f = files[i]; i++) {
+	if (typeof f.compressedSize !== 'undefined') {
+	    // Compressed file has its filename defined differently
+	    f.name = f.filename;
+	}
 	// At this time only .seq files are used
 	if (f.name.substr(-4, 4) == ".seq") {
-	    seqFiles.push(new SeqFile(f, seqFiles.length));
-	} else if (f.name.substr(-4, 4) == ".ab1") {
+	    seqFiles.push(new SeqFile(f));
+	} else if (f.name.substr(-4, 4) == ".ab1" && allowAB1Files) {
 	    // TODO: Add support for .ab1 files
-	} else if (f.name.substr(-4, 4) == ".zip") {
+	} else if (f.name.substr(-4, 4) == ".zip" && allowZipFiles) {
 	    zip.createReader(new zip.BlobReader(f), function(reader) {
 		reader.getEntries(function (entries) {
-		    message(entries[0].filename);
-
-		    for (entry in entries) {
-			message(entries[entry].filename);
-			if (entries[entry].filename.substr(-4, 4) == ".seq") {
-			    entries[entry].getData(new zip.TextWriter(), function(text) {
-				message(text);
-			    });
-			}
-		    }
+		    processFiles(entries);
 		    reader.close(function() {} );
 		});
 	    });
-	    message("Zipfile!");
 	} else {
 	    document.getElementById("comments").innerHTML += "Ignoring " + escape(f.name) + "<br />";
 	}
     }
-
-    makeGroups();
-    createTableByGroups();
-    reportTime();
 }
 
 function makeGroups() {
