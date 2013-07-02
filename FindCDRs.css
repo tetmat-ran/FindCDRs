@@ -138,7 +138,7 @@ seqtags {
 }
 
 #table_seqfiles>tfoot+tr>td, tr.group_border+tr>td {
-    padding-top: 4px;
+    border-top: 3px solid #dfffd6;
 }
 
 #table_seqfiles>tr>td:first-child {
@@ -151,7 +151,7 @@ seqtags {
 
 tr.group_border>td {
     border-bottom: 1px dotted black;
-    height: 4px;
+    height: 3px;
 }
 
 td.direction {
