@@ -598,6 +598,21 @@ function saveTextAsFile()
     downloadLink.click();
 }
 
+function export2excel() {
+
+    var data_type = 'data:application/vnd.ms-excel';
+    
+    var downloadLink = document.createElement("a");
+    downloadLink.download = "something.xls";
+    downloadLink.innerHTML = "Download File";
+
+    // Chrome allows the link to be clicked programmatically.
+    //downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+    downloadLink.href = data_type + ', ' + document.getElementById("table_seqfiles").outerHTML.replace(/ /g, '%20');
+
+    // downloadLink.click();
+}
+
 function describe(obj) {
     document.getElementById("comment_box").style.display = "block";
 
