@@ -529,12 +529,32 @@ function getTimestamp(dateObject) {
 	(seconds < 10 ? "0" : "") + seconds;
 }
 
-function saveTextAsFile()
-{
-    var textToWrite = "";
-    var textLines = [["Group ID", "LC", "HC1", "HC2", "HC3", "LC", "HC1", "HC2", "HC3", "Sequence Names"].join("\t")];
-    
-    // Output ones in groups first
+function getOutput() {
+    // Outputting array (lines) or arrays (each line)
+    // It can be outputted as text, excel file, table, etc
+
+    var lines = [];
+    lines.push(["Group ID", "LC", "HC1", "HC2", "HC3", "LC", "HC1", "HC2", "HC3", "Sequence Names"]);
+
+    // Those not in groups first
+    for (var iSeq in seqNotInGroups) {
+
+	var seq = seqNotInGroups[iSeq];
+	var lineElements = [seq.name,
+			    translate(seq.CDRs_dna[0]),
+			    translate(seq.CDRs_dna[1]),
+			    translate(seq.CDRs_dna[2]),
+			    translate(seq.CDRs_dna[3]),
+			    seq.CDRs_dna[0],
+			    seq.CDRs_dna[1],
+			    seq.CDRs_dna[2],
+			    seq.CDRs_dna[3],
+			    seq.name];
+
+	lines.push(lineElements);
+    }
+
+    // Those in groups
     for (var iGroup in seqGroups) {
 
 	var seqs = [];
@@ -560,34 +580,28 @@ function saveTextAsFile()
 			    CDRs_dna[0].join(","),
 			    CDRs_dna[1].join(","),
 			    CDRs_dna[2].join(","),
-			    CDRs_dna[3].join(","),
-			    seqs.join("\t")];
+			    CDRs_dna[3].join(",")];
+	lineElements = lineElements.concat(seqs);
 
-	textLines.push(lineElements.join("\t"));
+	lines.push(lineElements);
     }
 
-    // Those not in groups
-    for (var iSeq in seqNotInGroups) {
+    return lines;
+}
 
-	var seq = seqNotInGroups[iSeq];
-	var lineElements = [seq.name,
-			    translate(seq.CDRs_dna[0]),
-			    translate(seq.CDRs_dna[1]),
-			    translate(seq.CDRs_dna[2]),
-			    translate(seq.CDRs_dna[3]),
-			    seq.CDRs_dna[0],
-			    seq.CDRs_dna[1],
-			    seq.CDRs_dna[2],
-			    seq.CDRs_dna[3],
-			    seq.name];
+function saveTextAsFile()
+{
+    var textToWrite = "";
+    var textLines = [];
+    var output = getOutput();
 
-	textLines.push(lineElements.join("\t"));
+    for (var i in output) {
+	textLines.push(output[i].join("\t"));
     }
-
     textToWrite = textLines.join("\n");
-    
+
     var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
-    var fileNameToSaveAs = getTimestamp(new Date()) + "_FindCDRs_v" + version + ".txt";
+    var fileNameToSaveAs =  getOutputFilename() + ".txt";
     
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
@@ -599,18 +613,28 @@ function saveTextAsFile()
 }
 
 function export2excel() {
-
-    var data_type = 'data:application/vnd.ms-excel';
+    var output = getOutput();
     
+    var outputTable = '';
+    for (var i in output) {
+	outputTable += '<tr><td>' + output[i].join('</td><td>') + '</td></tr>';
+    }
+    
+    var data_type = 'data:application/vnd.ms-excel';
     var downloadLink = document.createElement("a");
-    downloadLink.download = "something.xls";
-    downloadLink.innerHTML = "Download File";
+    downloadLink.download = getOutputFilename() + ".xls";
+    downloadLink.innerHTML = "Download Excel File";
+
+    var excelHeader = '<html><head><meta name=ProgId content=Excel.Sheet><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>CDRs</x:Name></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><style>td { white-space:nowrap; }</style></head><body><table>'
+    var excelFooter = '</table></body></html>';
 
     // Chrome allows the link to be clicked programmatically.
-    //downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-    downloadLink.href = data_type + ', ' + document.getElementById("table_seqfiles").outerHTML.replace(/ /g, '%20');
+    downloadLink.href = data_type + ', ' + (excelHeader + outputTable + excelFooter).replace(/ /g, '%20');
+    downloadLink.click();
+}
 
-    // downloadLink.click();
+function getOutputFilename() {
+    return getTimestamp(new Date()) + "_FindCDRs_v" + version;
 }
 
 function describe(obj) {
