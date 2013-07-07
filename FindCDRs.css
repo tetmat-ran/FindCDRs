@@ -78,10 +78,11 @@ seqtags {
     clear: both;
 }
 
-#comment_box {
+#message_box {
     width: 90%;
 
-    margin: 5%;
+    margin: 10px;
+    margin-left: 50px;
     padding: 10px;
     border: 1px dashed black;
 
@@ -92,7 +93,7 @@ seqtags {
 #table_seqfiles {
     min-width: 500px;
 
-    margin: 20px 5% 20px 5%;
+    margin: 20px 5% 20px 50px;
     padding: 5px;
 
     background-color: #dfffd6;
@@ -257,19 +258,20 @@ grouptag {
 }
 
 #control_text>td {
-    width: 75px;
+    width: 55px;
     text-align: center;
-    font-size: small;
+    font-size: x-small;
+
+    padding-right: 10px;
 }
 
 #control_buttons>td {
-    margin: 0px;
     padding: 0px;
 }
 
 img.button {
     width: 40px;
-    margin: 0px 10px 10px 10px;
+    margin: 0px 10px 10px 0px;
     padding: 5px;
 
     background-color: #d9e9fe;
@@ -290,7 +292,7 @@ img.button:active {
 
 img.pressed {
     width: 38px;
-    margin: 0px 10px 10px 10px;
+    margin: 0px 10px 10px 0px;
     padding: 5px;
 
     background-color: #fffd91;

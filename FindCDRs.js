@@ -9,7 +9,7 @@ Extracting CDR sequences from LC and HC sequencing results
 
 Tet Matsuguchi <tet@alum.mit.edu>
 
-Last modified: Jul 02, 2013 (v0.500)
+Last modified: Jul 07 2013 (v0.600)
  
 Many lines on FileReader have been borrowed from:
 http://www.html5rocks.com/en/tutorials/file/dndfiles/
@@ -18,7 +18,7 @@ http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-t
 
 */
 
-var version = "0.500";
+var version = "0.600";
 
 // zip.js configuration
 zip.useWebWorkers = false;
@@ -292,7 +292,7 @@ function init() {
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleDrop, false);
 
-    document.getElementById("comments").innerHTML += "Start time: " + getTimestamp(startDate) + "<br />\n";
+    document.getElementById("messages").innerHTML += "Start time: " + getTimestamp(startDate) + "<br />\n";
 }
 
 // Drop zone
@@ -354,7 +354,7 @@ function processFiles(files) {
 				message("Unzipping " + f.name + " failed... Skpping.");
 			    });
 	} else {
-	    document.getElementById("comments").innerHTML += "Ignoring " + escape(f.name) + "<br />";
+	    document.getElementById("messages").innerHTML += "Ignoring " + escape(f.name) + "<br />";
 	}
     }
 }
@@ -638,21 +638,21 @@ function getOutputFilename() {
 }
 
 function describe(obj) {
-    document.getElementById("comment_box").style.display = "block";
+    document.getElementById("message_box").style.display = "block";
 
-    var commentBox = document.getElementById("comments");
+    var messageBox = document.getElementById("messages");
     for (elm in obj) {
-	commentBox.innerHTML += elm + ": " + obj[elm] + "<br />\n";
+	messageBox.innerHTML += elm + ": " + obj[elm] + "<br />\n";
     }
 }
 
 function message(msg) {
-    document.getElementById('comments').innerHTML += msg + "<br />\n";
+    document.getElementById('messages').innerHTML += msg + "<br />\n";
 }
 
 function toggleMessageBox() {
-    messageBoxDom = document.getElementById("comment_box");
-    messageBoxButton = document.getElementById("show_comments");
+    messageBoxDom = document.getElementById("message_box");
+    messageBoxButton = document.getElementById("show_messages");
 
     if (messageBox) {
 	messageBoxButton.className = "button";
@@ -673,5 +673,5 @@ function reportTime() {
     var now = new Date();
     var elapsed = (now.getTime() - startDate.getTime()) / 1000;
     var timeMessage = elapsed + " seconds have elapsed.";
-    document.getElementById('comments').innerHTML += timeMessage + "<br />\n";
+    document.getElementById('messages').innerHTML += timeMessage + "<br />\n";
 }

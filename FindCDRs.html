@@ -8,7 +8,7 @@ Extracting CDR sequences from LC and HC sequencing results
 
 Tet Matsuguchi <tet@alum.mit.edu>
 
-Last modified: Jul 02, 2013 (v0.500)
+Last modified: Jul 07, 2013 (v0.600)
  
 See attributions at the bottom for CC
 
@@ -56,10 +56,14 @@ See attributions at the bottom for CC
 	<td><img id="load_files" class="button" onClick="document.getElementById('choose_files').click()" src="copy_files.png" /></td>
 	<td><img id="save_file" class="button" onClick="saveTextAsFile()" src="save_file.png" /></td>
 	<td><img id="excel_file" class="button" onClick="export2excel()" src="excel.png" /></td>
-	<td><img id="show_comments" class="button" onClick="toggleMessageBox()" src="comment.png" /></td>
+	<td><img id="show_messages" class="button" onClick="toggleMessageBox()" src="comment.png" /></td>
 	<td><div id="statusBox">Load <font class="red_highlight">.zip</font> and/or <font class="red_highlight">.seq</font> files...</div></td>
       </tr>
     </table>
+
+      <div id="message_box">
+	<output id="messages">Messages:<br /></output>
+      </div>
 
       <!-- Table for SeqFile List -->
       <table id="table_seqfiles">
@@ -85,10 +89,6 @@ See attributions at the bottom for CC
 	</tfoot>
       </table>
       
-      <div id="comment_box">
-	<output id="comments">Messages:<br /></output>
-      </div>
-
     <div id="attributions">
       <br />
 
