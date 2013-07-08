@@ -452,8 +452,8 @@ function changeGrouping() {
     regexpDOM = document.getElementById("group_regexp");
     if (regexpDOM.value == "Other...") {
 	newOptionValue = prompt("Enter a new regular expression for grouping sequence names:");
-	regexpDOM.add(new Option(newOptionValue));
-	regexpDOM.selectedIndex = regexpDOM.length - 1;
+	regexpDOM.add(new Option(newOptionValue), regexpDOM.options[regexpDOM.options.length - 1]);
+	regexpDOM.selectedIndex = regexpDOM.length - 2;
     }
 
     reportGroups();
