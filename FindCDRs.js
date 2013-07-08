@@ -86,9 +86,36 @@ function SeqFile(f) {
 }
 
 // SeqFile constants
-SeqFile.prototype.sequenceTags = ["TACTGTCAGCAA", "", "ACGTTCGGACAG", "TCTGGCTTCAAC", "", "CACTGGGTGCGT", "GAATGGGTTGCA", "", "TATGCCGATAGC", "TATTGTGCTCGC", "", "GACTACTGGGGT"];
-SeqFile.prototype.sequenceTagIDs = ["LC_5", "LC", "LC_3", "HC1_5", "HC1", "HC1_3", "HC2_5", "HC2", "HC2_3", "HC3_5", "HC3", "HC3_3"];
-SeqFile.prototype.sequenceTagSymbols = ["[", "LC", "]", "[", "HC1", "]", "[", "HC2", "]", "[", "HC3", "]"];
+SeqFile.prototype.sequenceTags = ["ATCAGCAGTCTG", "CAGCCGGAAGAC", "TTCGCAACTTAT",
+				  "TACTGTCAGCAA", "", "ACGTTCGGACAG",
+				  "GGTACCAAGGTG", "GAGATCAAACGA", "ACTGTGGCTGCA",
+				  "CAGCCAGGGGGC", "TCACTCCGTTTG", "TCCTGTGCAGCT",
+				  "TCTGGCTTCAAC", "", "CACTGGGTGCGT",
+				  "CCCGGGTAAGGG",
+				  "GAATGGGTTGCA", "", "TATGCCGATAGC",
+				  "TCAAGGGCCGTT", "CACTATAAGCGC", "GACACATCCAAA", "ACACAGCCTACC", "ACAAATGAACAG", "TTAAGAGCTGAG", "ACACTGCCGTCT",
+				  "TATTGTGCTCGC", "", "GACTACTGGGGT",
+				 "CAAGGAACCCTG", "GTCACCGTCTCC", "TCGGCCTCCACC"];
+SeqFile.prototype.sequenceTagIDs = ["LC01_1", "LC01_2", "LC01_3",
+				    "LC_5", "LC", "LC_3",
+				    "LC12_1", "LC12_2", "LC12_3",
+				    "HC01_1", "HC01_2", "HC01_3",
+				    "HC1_5", "HC1", "HC1_3",
+				    "HC12",
+				    "HC2_5", "HC2", "HC2_3",
+				    "HC23_1", "HC23_2", "HC23_3", "HC23_4", "HC23_5", "HC23_6", "HC23_7",
+				    "HC3_5", "HC3", "HC3_3",
+				    "HC34_1", "HC34_2", "HC34_3"];
+SeqFile.prototype.sequenceTagSymbols = ["o", "o", "o",
+					"[", "LC", "]",
+					"o", "o", "o",
+					"o", "o", "o",
+					"[", "HC1", "]",
+					"o",
+					"[", "HC2", "]",
+					"o", "o", "o", "o", "o", "o", "o",
+					"[", "HC3", "]",
+					"o", "o", "o"];
 SeqFile.prototype.CDRs_id = ["LC", "HC1", "HC2", "HC3"];
 
 
