@@ -293,6 +293,8 @@ function init() {
     dropZone.addEventListener('drop', handleDrop, false);
 
     document.getElementById("messages").innerHTML += "Start time: " + getTimestamp(startDate) + "<br />\n";
+
+    document.getElementById("version_box").innerHTML = "v" + version;
 }
 
 // Drop zone
@@ -398,15 +400,21 @@ function makeGroups() {
     // Remember to escape \ with \\
     var re_grouping = new RegExp(makeRegExp(document.getElementById("group_regexp").value));
 
+    naElement = document.createElement('font');
+    naElement.className = 'na';
+    naElement.innerHTML = 'n/a';
+
+
     for (seqFile in seqFiles) {
 	var m = re_grouping.exec(seqFiles[seqFile].name);
 
 	// If the sequence name does not have a match for the regexp,
 	// this is a lone sequence with no group identifier
 	if (!m) {
+	    seqFiles[seqFile].tableGroupName.innerHTML = "";
 	    seqFiles[seqFile].group = -1;
 	    seqNotInGroups.push(seqFiles[seqFile]);
-	    seqFiles[seqFile].tableGroupName.innerHTML = "n/a";
+	    seqFiles[seqFile].tableGroupName.appendChild(naElement.cloneNode(true));
 	} else {
 
 	    // The group identifier is either the full match to the regexp, or

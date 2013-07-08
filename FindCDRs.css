@@ -1,7 +1,8 @@
 html {
     font-family: arial, helvetica, sans-serif;
-    background-color: #62fd3a;
-    background-color: #a8ff91;
+    background-color: #62fd3a; 
+    background-color: #a8ff91; 
+    background-color: #66e645; 
 }
 
 a {
@@ -32,6 +33,14 @@ seqtags {
     color: white;
     font-size: 24px;
     text-shadow: 2px 2px 5px #4fdd29;
+    text-shadow: 2px 2px 5px black;
+}
+
+#version_box {
+    color: white;
+    font-size: small;
+    text-shadow: 1px 1px 3px #4fdd29;
+    text-shadow: 1px 1px 3px black;
 }
 
 #chrome_logo_box {
@@ -302,6 +311,9 @@ img.pressed {
     box-shadow: 2px 2px 3px black;
 }
 
+.na {
+    color: #de293f;
+}
 
 .primary-1 { background-color: #62fd3a }
 .primary-2 { background-color: #66e645 }

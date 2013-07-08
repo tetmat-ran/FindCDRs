@@ -1,6 +1,3 @@
 -More sequence tags
--Flip the message box
 -Button statuses during upload
 -Timers
--Version box
--red color for n/a groups
