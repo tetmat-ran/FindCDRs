@@ -167,32 +167,32 @@ tr.rev>.direction { color: #debd29; }
 tr.bad>.direction { color: #de293f; }
 
 /*
-tr.fwd { background-color: #d9e9fe; }
-tr.fwd:hover { background-color: #9ac4fe; }
-tr.rev { background-color:  #fffed6; }
-tr.rev:hover { background-color: #fffb3a; }
-tr.bad { background-color: #ffd6db; }
-tr.bad:hover { background-color: #ff919e; }
-*/
+  tr.fwd { background-color: #d9e9fe; }
+  tr.fwd:hover { background-color: #9ac4fe; }
+  tr.rev { background-color:  #fffed6; }
+  tr.rev:hover { background-color: #fffb3a; }
+  tr.bad { background-color: #ffd6db; }
+  tr.bad:hover { background-color: #ff919e; }
+  */
 
 /*
-font.fwd { color: #357adb; }
-font.rev { color: #debd29; }
-font.bad { color: #de293f; }
+  font.fwd { color: #357adb; }
+  font.rev { color: #debd29; }
+  font.bad { color: #de293f; }
 
 .fwd>td {
-    border-top: 2px solid #357adb;
-    border-bottom: 2px solid #357adb;
+border-top: 2px solid #357adb;
+border-bottom: 2px solid #357adb;
 }
 
 .rev>td {
-    border-top: 2px solid #dedb29;
-    border-bottom: 2px solid #dedb29;
+border-top: 2px solid #dedb29;
+border-bottom: 2px solid #dedb29;
 }
 
 .bad>td {
-    border-top: 2px solid #de293f;
-    border-bottom: 2px solid #de293f;
+border-top: 2px solid #de293f;
+border-bottom: 2px solid #de293f;
 }
 */
 

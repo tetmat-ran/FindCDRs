@@ -1,20 +1,20 @@
 /*
 
-FindCDRs.js
--Also require FindCDRs.html, FindCDRs.css
+  FindCDRs.js
+  -Also require FindCDRs.html, FindCDRs.css
 
-*only tested for Google Chrome v27.0.1453.110
+  *only tested for Google Chrome v27.0.1453.110
 
-Extracting CDR sequences from LC and HC sequencing results
+  Extracting CDR sequences from LC and HC sequencing results
 
-Tet Matsuguchi <tet@alum.mit.edu>
+  Tet Matsuguchi <tet@alum.mit.edu>
 
-Last modified: Jul 07 2013 (v0.600)
- 
-Many lines on FileReader have been borrowed from:
-http://www.html5rocks.com/en/tutorials/file/dndfiles/
+  Last modified: Jul 07 2013 (v0.600)
+  
+  Many lines on FileReader have been borrowed from:
+  http://www.html5rocks.com/en/tutorials/file/dndfiles/
 
-http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
+  http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
 
 */
 
@@ -198,7 +198,7 @@ SeqFile.prototype.findCDRs = function () {
 
 	    // If so, bounded region contains the CDR
 	    seq_dna = this.sequence.slice(this.seqTagPositions[iSeqTag - 1] + this.sequenceTags[iSeqTag - 1].length,
-						      this.seqTagPositions[iSeqTag + 1]);
+					  this.seqTagPositions[iSeqTag + 1]);
 	}
 
 	this.CDRs_dna.push(seq_dna);
@@ -348,11 +348,11 @@ function processFiles(files) {
 				     reader.close(function() {} );
 				 });
 			     },
-			    function (error) { // onerror during zipfile reading
-				nSeqFilesPending--;
-				// nSeqFilesProcessed++; // don't count zipfile
-				message("Unzipping " + f.name + " failed... Skpping.");
-			    });
+			     function (error) { // onerror during zipfile reading
+				 nSeqFilesPending--;
+				 // nSeqFilesProcessed++; // don't count zipfile
+				 message("Unzipping " + f.name + " failed... Skpping.");
+			     });
 	} else {
 	    document.getElementById("messages").innerHTML += "Ignoring " + escape(f.name) + "<br />";
 	}

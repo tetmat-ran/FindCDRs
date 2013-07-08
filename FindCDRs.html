@@ -1,18 +1,18 @@
 <!--
-FindCDRs.html
--Also require FindCDRs.js, FindCDRs.css
+    FindCDRs.html
+    -Also require FindCDRs.js, FindCDRs.css
 
-*only tested for Google Chrome v27.0.1453.110
+    *only tested for Google Chrome v27.0.1453.110
 
-Extracting CDR sequences from LC and HC sequencing results
+    Extracting CDR sequences from LC and HC sequencing results
 
-Tet Matsuguchi <tet@alum.mit.edu>
+    Tet Matsuguchi <tet@alum.mit.edu>
 
-Last modified: Jul 07, 2013 (v0.600)
- 
-See attributions at the bottom for CC
+    Last modified: Jul 07, 2013 (v0.600)
+    
+    See attributions at the bottom for CC
 
--->
+  -->
 <html>
   <head>
     <title>FindCDRs</title>
@@ -61,34 +61,34 @@ See attributions at the bottom for CC
       </tr>
     </table>
 
-      <div id="message_box">
-	<output id="messages">Messages:<br /></output>
-      </div>
+    <div id="message_box">
+      <output id="messages">Messages:<br /></output>
+    </div>
 
-      <!-- Table for SeqFile List -->
-      <table id="table_seqfiles">
-	<thead>
-	  <tr>
-	    <td>Sequence Name
-	      <select id="group_regexp" onChange="changeGrouping();">
-		<option>(Seq.*?)_</option>
-		<option>_(RowColumn)$</option>
-		<option>S\d+-Seq\d+-(.*?)_</option>
-		<option>.*</option>
-		<option>Other...</option>
-	      </select>
-	    </td>
-	    <td>Group</td>
-	    <td>fwd/rev</td>
-	    <td>Sequence Tags</td>
-	  </tr>
-	</thead>
-	<!-- footer for seqfile list -->
-	<tfoot>
-	  <tr><td>&nbsp;</td></tr>
-	</tfoot>
-      </table>
-      
+    <!-- Table for SeqFile List -->
+    <table id="table_seqfiles">
+      <thead>
+	<tr>
+	  <td>Sequence Name
+	    <select id="group_regexp" onChange="changeGrouping();">
+	      <option>(Seq.*?)_</option>
+	      <option>_(RowColumn)$</option>
+	      <option>S\d+-Seq\d+-(.*?)_</option>
+	      <option>.*</option>
+	      <option>Other...</option>
+	    </select>
+	  </td>
+	  <td>Group</td>
+	  <td>fwd/rev</td>
+	  <td>Sequence Tags</td>
+	</tr>
+      </thead>
+      <!-- footer for seqfile list -->
+      <tfoot>
+	<tr><td>&nbsp;</td></tr>
+      </tfoot>
+    </table>
+    
     <div id="attributions">
       <br />
 
