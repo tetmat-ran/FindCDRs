@@ -3,6 +3,4 @@
 -Button statuses during upload
 -Timers
 -Version box
--Grouping dropdown
--Boundaries between lines for ungrouped
 -red color for n/a groups

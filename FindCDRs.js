@@ -472,9 +472,6 @@ function createTableByGroups() {
     // Add ungrouped sequences first
     for (iSeq in seqNotInGroups) {
 	singleTable.appendChild(seqNotInGroups[iSeq].tableRow);
-    }
-
-    if (seqNotInGroups.length > 0) {
 	singleTable.appendChild(groupBorder.cloneNode(true));
     }
 
