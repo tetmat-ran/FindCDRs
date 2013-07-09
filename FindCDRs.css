@@ -41,6 +41,8 @@ seqtags {
     font-size: small;
     text-shadow: 1px 1px 3px #4fdd29;
     text-shadow: 1px 1px 3px black;
+
+    margin-left: 5px;
 }
 
 #chrome_logo_box {

@@ -1,3 +1,2 @@
--More sequence tags
 -Button statuses during upload
 -Timers
