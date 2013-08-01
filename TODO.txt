@@ -1,2 +1,4 @@
+-Multiple sequences
+-Output EXCEL coloring
 -Button statuses during upload
 -Timers
