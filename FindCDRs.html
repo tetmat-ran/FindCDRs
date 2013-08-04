@@ -71,9 +71,9 @@
 	<tr>
 	  <td>Sequence Name
 	    <select id="group_regexp" onChange="changeGrouping();">
-	      <option>(Seq.*?)_</option>
-	      <option>_(RowColumn)$</option>
-	      <option>(.*?)_</option><!-- For Brian-removes Quintara notations -->
+	      <option value="(Seq.*?)_">Standard: (Seq.*?)_</option>
+	      <option value="_(RowColumn)$">Seq Position: _(RowColumn)$</option>
+	      <option value="(.*?)_">Removes Quintara: (.*?)_</option><!-- For Brian-removes Quintara notations -->
 	      <option>S\d+-Seq\d+-(.*?)_</option>
 	      <option>.*</option>
 	      <option>Other...</option>
