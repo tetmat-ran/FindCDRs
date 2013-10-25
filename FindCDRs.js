@@ -598,6 +598,20 @@ function getOutput() {
 
 	    for (iCDR in CDRs_dna) {
 		if (seqInGroups[iGroup][iSeq].CDRs_dna[iCDR] != "") {
+		    // if the sequence already exists and is the same, don't add
+		    if (CDRs_dna[iCDR].length) {
+			same = 0;
+			for (cdrseq in CDRs_dna[iCDR]) {
+			    same = CDRs_dna[iCDR][cdrseq] == seqInGroups[iGroup][iSeq].CDRs_dna[iCDR];
+			    if (same) {
+				break;
+			    }
+			}
+			if (same) {
+			    break;
+			}
+		    }
+
 		    CDRs_dna[iCDR].push(seqInGroups[iGroup][iSeq].CDRs_dna[iCDR]);
 		    CDRs_aa[iCDR].push(translate(seqInGroups[iGroup][iSeq].CDRs_dna[iCDR]));
 		}
