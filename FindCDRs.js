@@ -565,13 +565,22 @@ function getOutput() {
     // Outputting array (lines) or arrays (each line)
     // It can be outputted as text, excel file, table, etc
 
+    var columns = [[],    // Group ID
+	[], [], [], [],   // Amino Acid Seq of CDRs
+	[], [], [], [],   // DNA Seq of CDRs
+	[]];              // Sequence Names
+
+    /* Pre-v0.7
     var lines = [];
     lines.push(["Group ID", "LC", "HC1", "HC2", "HC3", "LC", "HC1", "HC2", "HC3", "Sequence Names"]);
+    */
 
     // Those not in groups first
     for (var iSeq in seqNotInGroups) {
 
 	var seq = seqNotInGroups[iSeq];
+
+    /* Pre-v0.7
 	var lineElements = [seq.name,
 			    translate(seq.CDRs_dna[0]),
 			    translate(seq.CDRs_dna[1]),
@@ -584,6 +593,20 @@ function getOutput() {
 			    seq.name];
 
 	lines.push(lineElements);
+*/
+	columns[0].push(seq.name);
+
+	columns[1].push(translate(seq.CDRs_dna[0]));
+	columns[2].push(translate(seq.CDRs_dna[1]));
+	columns[3].push(translate(seq.CDRs_dna[2]));
+	columns[4].push(translate(seq.CDRs_dna[3]));
+
+	columns[5].push(seq.CDRs_dna[0]);
+	columns[6].push(seq.CDRs_dna[1]);
+	columns[7].push(seq.CDRs_dna[2]);
+	columns[8].push(seq.CDRs_dna[3]);
+
+	columns[9].push(seq.name);
     }
 
     // Those in groups
@@ -627,6 +650,7 @@ function getOutput() {
 	    }
 	}
 
+	/* Pre-v0.7
 	var lineElements = [seqGroups[iGroup],
 			    CDRs_aa[0].join(","),
 			    CDRs_aa[1].join(","),
@@ -639,6 +663,69 @@ function getOutput() {
 	lineElements = lineElements.concat(seqs);
 
 	lines.push(lineElements);
+*/
+
+	columns[0].push(seqGroups[iGroup]);
+
+	columns[1].push(CDRs_aa[0]);
+	columns[2].push(CDRs_aa[1]);
+	columns[3].push(CDRs_aa[2]);
+	columns[4].push(CDRs_aa[3]);
+
+	columns[5].push(CDRs_dna[0]);
+	columns[6].push(CDRs_dna[1]);
+	columns[7].push(CDRs_dna[2]);
+	columns[8].push(CDRs_dna[3]);
+
+	columns[9].push(seqs);
+    }
+
+    // Determine how many columns are needed for each CDR (due to unequal duplicate reads)
+    column_sizes = new Array(10);
+    for (column in columns) {
+	var max_size = 1;
+	for (line in columns[column]) {
+	    if (Array.isArray(columns[column][line])) {
+		var size = columns[column][line].length;
+		if (size > max_size) {
+		    max_size = size;
+		}
+	    }
+	}
+	column_sizes[column] = max_size;
+    }
+
+    // Format each line using the max column size for each category
+    var lines = [];
+
+    // Header Line
+    var header_line = [];
+    var headers = ["Group ID", "LC", "HC1", "HC2", "HC3", "LC", "HC1", "HC2", "HC3", "Sequence Name"];
+    for (column in columns) {
+	if (column_sizes[column] == 1) {
+	    header_line.push(headers[column]);
+	} else {
+	    for (var c = 0; c < column_sizes[column]; c++) {
+		header_line.push(headers[column] + "_" + (c + 1));
+	    }
+	}
+    }
+    lines.push(header_line);
+
+    for (iLine in columns[0]) {
+	var line = [];
+
+	for (column in columns) {
+	    var column_size = 1;
+	    if (Array.isArray(columns[column][iLine])) {
+		column_size = columns[column][iLine].length;
+		line = line.concat(columns[column][iLine]);
+	    } else {
+		line.push(columns[column][iLine]);
+	    }
+	    line = line.concat(new Array(column_sizes[column] - column_size))
+	}
+	lines.push(line);
     }
 
     return lines;
