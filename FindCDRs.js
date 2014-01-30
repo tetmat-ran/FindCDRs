@@ -3,13 +3,13 @@
   FindCDRs.js
   -Also require FindCDRs.html, FindCDRs.css
 
-  *only tested for Google Chrome v27.0.1453.110
+  *only tested for Google Chrome v32.0.1700.102
 
   Extracting CDR sequences from LC and HC sequencing results
 
   Tet Matsuguchi <tet@alum.mit.edu>
 
-  Last modified: OCT 25 2013 (v0.620)
+  Last modified: JAN 30 2014 (v0.700)
   
   Many lines on FileReader have been borrowed from:
   http://www.html5rocks.com/en/tutorials/file/dndfiles/
@@ -18,7 +18,7 @@
 
 */
 
-var version = "0.620";
+var version = "0.700";
 
 // zip.js configuration
 zip.useWebWorkers = false;
