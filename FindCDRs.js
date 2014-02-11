@@ -9,7 +9,7 @@
 
   Tet Matsuguchi <tet@alum.mit.edu>
 
-  Last modified: JAN 30 2014 (v0.700)
+  Last modified: FEB 11 2014 (v0.710)
   
   Many lines on FileReader have been borrowed from:
   http://www.html5rocks.com/en/tutorials/file/dndfiles/
@@ -18,7 +18,7 @@
 
 */
 
-var version = "0.700";
+var version = "0.710";
 
 // zip.js configuration
 zip.useWebWorkers = false;
