@@ -637,14 +637,15 @@ function getOutput() {
 			}
 		    }
 
-		    // if it's a good sequence (i.e. the length is multiple of 3), put it in front [unshift]
+		    // if it's a good sequence (i.e. the length is multiple of 3, no stop codon), put it in front [unshift]
 		    // if it's a bad sequence, put it at back [push]
-		    if (seqInGroups[iGroup][iSeq].CDRs_dna[iCDR].length % 3 == 0) {
+		    aa_cdr = translate(seqInGroups[iGroup][iSeq].CDRs_dna[iCDR]);
+		    if (seqInGroups[iGroup][iSeq].CDRs_dna[iCDR].length % 3 == 0 && aa_cdr.search(/_/) == -1) {
 			CDRs_dna[iCDR].unshift(seqInGroups[iGroup][iSeq].CDRs_dna[iCDR]);
-			CDRs_aa[iCDR].unshift(translate(seqInGroups[iGroup][iSeq].CDRs_dna[iCDR]));
+			CDRs_aa[iCDR].unshift(aa_cdr);
 		    } else {
 			CDRs_dna[iCDR].push(seqInGroups[iGroup][iSeq].CDRs_dna[iCDR]);
-			CDRs_aa[iCDR].push(translate(seqInGroups[iGroup][iSeq].CDRs_dna[iCDR]));
+			CDRs_aa[iCDR].push(aa_cdr);
 		    }
 
 		}
