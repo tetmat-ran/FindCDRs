@@ -9,7 +9,7 @@
 
   Tet Matsuguchi <tet@alum.mit.edu>
 
-  Last modified: JUL 09, 2014 (v0.711)
+  Last modified: MAR 06, 2015 (v0.800)
   
   Many lines on FileReader have been borrowed from:
   http://www.html5rocks.com/en/tutorials/file/dndfiles/
@@ -18,7 +18,7 @@
 
 */
 
-var version = "0.711";
+var version = "0.800";
 
 // zip.js configuration
 zip.useWebWorkers = false;
@@ -86,38 +86,53 @@ function SeqFile(f) {
 }
 
 // SeqFile constants
-SeqFile.prototype.sequenceTags = ["ATCAGCAGTCTG", "CAGCCGGAAGAC", "TTCGCAACTTAT",
-				  "TACTGTCAGCAA", "", "ACGTTCGGACAG",
-				  "GGTACCAAGGTG", "GAGATCAAACGA", "ACTGTGGCTGCA",
-				  "CAGCCAGGGGGC", "TCACTCCGTTTG", "TCCTGTGCAGCT",
-				  "TCTGGCTTCAAC", "", "CACTGGGTGCGT",
-				  "CCCGGGTAAGGG",
-//				  "GAATGGGTTGCA", "", "TATGCCGATAGC",
-				  "GAATGGGTTGCA", "", "TATGCCGA", // shorter HC2 3' boundary
-				  "TCAAGGGCCGTT", "CACTATAAGCGC", "GACACATCCAAA", "ACACAGCCTACC", "ACAAATGAACAG", "TTAAGAGCTGAG", "ACACTGCCGTCT",
-				  "TATTGTGCTCGC", "", "GACTACTGGGGT",
-				 "CAAGGAACCCTG", "GTCACCGTCTCC", "TCGGCCTCCACC"];
-SeqFile.prototype.sequenceTagIDs = ["LC01_1", "LC01_2", "LC01_3",
-				    "LC_5", "LC", "LC_3",
-				    "LC12_1", "LC12_2", "LC12_3",
-				    "HC01_1", "HC01_2", "HC01_3",
-				    "HC1_5", "HC1", "HC1_3",
-				    "HC12",
-				    "HC2_5", "HC2", "HC2_3",
-				    "HC23_1", "HC23_2", "HC23_3", "HC23_4", "HC23_5", "HC23_6", "HC23_7",
-				    "HC3_5", "HC3", "HC3_3",
-				    "HC34_1", "HC34_2", "HC34_3"];
-SeqFile.prototype.sequenceTagSymbols = ["o", "o", "o",
-					"[", "LC", "]",
-					"o", "o", "o",
-					"o", "o", "o",
-					"[", "HC1", "]",
-					"o",
-					"[", "HC2", "]",
-					"o", "o", "o", "o", "o", "o", "o",
-					"[", "HC3", "]",
-					"o", "o", "o"];
-SeqFile.prototype.CDRs_id = ["LC", "HC1", "HC2", "HC3"];
+SeqFile.prototype.sequenceTags = [
+    "CGTGCCAGTCAG", "", "TGGTATCAACAG",
+    "CTTCTGATTTAC", "", "GGAGTCCCTTCT",
+    "ATCAGCAGTCTG", "CAGCCGGAAGAC", "TTCGCAACTTAT",
+    "TACTGTCAGCAA", "", "ACGTTCGGACAG",
+    "GGTACCAAGGTG", "GAGATCAAACGA", "ACTGTGGCTGCA",
+    "CAGCCAGGGGGC", "TCACTCCGTTTG", "TCCTGTGCAGCT",
+    "TCTGGCTTCAAC", "", "CACTGGGTGCGT",
+    "CCCGGGTAAGGG",
+    //				  "GAATGGGTTGCA", "", "TATGCCGATAGC",
+    "GAATGGGTTGCA", "", "TATGCCGA", // shorter HC2 3' boundary
+    "TCAAGGGCCGTT", "CACTATAAGCGC", "GACACATCCAAA", "ACACAGCCTACC", "ACAAATGAACAG", "TTAAGAGCTGAG", "ACACTGCCGTCT",
+    "TATTGTGCTCGC", "", "GACTACTGGGGT",
+    "CAAGGAACCCTG", "GTCACCGTCTCC", "TCGGCCTCCACC"
+];
+
+SeqFile.prototype.sequenceTagIDs = [
+    "LC1_5", "LC1", "LC1_3",
+    "LC2_5", "LC2", "LC2_3",
+    "LC01_1", "LC01_2", "LC01_3",
+    "LC3_5", "LC3", "LC3_3",
+    "LC12_1", "LC12_2", "LC12_3",
+    "HC01_1", "HC01_2", "HC01_3",
+    "HC1_5", "HC1", "HC1_3",
+    "HC12",
+    "HC2_5", "HC2", "HC2_3",
+    "HC23_1", "HC23_2", "HC23_3", "HC23_4", "HC23_5", "HC23_6", "HC23_7",
+    "HC3_5", "HC3", "HC3_3",
+    "HC34_1", "HC34_2", "HC34_3"
+];
+
+SeqFile.prototype.sequenceTagSymbols = [
+    "[", "LC1", "]",
+    "[", "LC2", "]",
+    "o", "o", "o",
+    "[", "LC3", "]",
+    "o", "o", "o",
+    "o", "o", "o",
+    "[", "HC1", "]",
+    "o",
+    "[", "HC2", "]",
+    "o", "o", "o", "o", "o", "o", "o",
+    "[", "HC3", "]",
+    "o", "o", "o"
+];
+
+    SeqFile.prototype.CDRs_id = ["LC1", "LC2", "LC3", "HC1", "HC2", "HC3"];
 
 
 SeqFile.prototype.getSeq = function () {
@@ -353,6 +368,9 @@ function processInputFiles(files) {
     waitForProcessingFiles();
 }
 
+    function processFastaFile(file) {
+    }
+
 // Processing Files
 function processFiles(files) {
 
@@ -366,6 +384,9 @@ function processFiles(files) {
 	    seqFiles.push(new SeqFile(f));
 	} else if (f.name.substr(-4, 4) == ".ab1" && allowAB1Files) {
 	    // TODO: Add support for .ab1 files
+	} else if (f.name.substr(-6, 6) == ".fasta" && allowAB1Files) {
+	    // If the extension is .fasta, expect multiple files
+	    processFastaFile(f);
 	} else if (f.name.substr(-4, 4) == ".zip" && allowZipFiles) {
 	    status("Unzipping files...");
 	    nSeqFilesPending++;
